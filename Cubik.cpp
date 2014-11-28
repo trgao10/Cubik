@@ -106,10 +106,7 @@ Cubik::Cubik() {
     centerConstraint->setTranslationConstraint(AxisPlaneConstraint::FORBIDDEN, Vec(0.0,0.0,0.0));
     centerConstraint->setRotationConstraint(AxisPlaneConstraint::FORBIDDEN, Vec(0.0,0.0,0.0));
     centerCube->getCubeFrame()->setConstraint(centerConstraint);
-    // centerCube->getCubeFrameConstraint()->setTranslationConstraint(AxisPlaneConstraint::FORBIDDEN, Vec(0.0,0.0,0.0));
-    // centerCube->getCubeFrameConstraint()->setRotationConstraint(AxisPlaneConstraint::FORBIDDEN, Vec(0.0,0.0,0.0));
-    // centerCube->setConstraint();
-    
+
     // Initialize faceCenterCubes
     for (int j = 0; j < NumFaces; j++) {
         WorldConstraint * faceConstraint = new WorldConstraint();
@@ -131,6 +128,16 @@ Cubik::Cubik() {
     }
 
     selected = 8; // camera is selected by default
+}
+
+Cubik::~Cubik() {
+    delete centerCube;
+    for (int j = 0; j < NumFaces; j++)
+        delete faceCenterCubes[j];
+    // delete faceCenterCubes;
+    for (int j = 0; j < NumEdges; j++)
+        delete edgeCubes[j];
+    // delete edgeCubes;
 }
 
 void Cubik::draw(bool names) {

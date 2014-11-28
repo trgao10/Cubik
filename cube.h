@@ -26,6 +26,7 @@ public:
     Cube();
     Cube(std::string cubetype);
     Cube(std::string cubetype, CubeFrame * cubeFrame_);
+    ~Cube();
     void draw();
     std::string getCubeType() { return CubeType; }
     CubeFrame * getCubeFrame() { return cubeFrame; }

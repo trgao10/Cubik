@@ -11,6 +11,7 @@
 class Cubik {
 public:
     Cubik();
+    ~Cubik();
     void draw(bool names=false);
 
     Cube * getCenterCube() {

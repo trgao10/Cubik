@@ -1,2 +1,4 @@
 .qglviewer.xml
+*.o
 Cubik
+log.txt

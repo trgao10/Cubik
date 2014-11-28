@@ -54,6 +54,10 @@ Cube::Cube(std::string cubetype, CubeFrame * cubeFrame_) {
     cubeFrame = cubeFrame_;
 }
 
+Cube::~Cube() {
+    // delete cubeFrame;
+}
+
 void Cube::draw() {
     GLfloat colors[72] = {0};
     if (find(CubeType.begin(), CubeType.end(), 'U') != CubeType.end()) {
@@ -172,8 +176,3 @@ bool CubeFrame::checkAlignedWithFrame (const CubeFrame * const frame) {
     
     return false;
 }
-
-
-    //     translate(center - orientation().rotate(old.coordinatesOf(center)) - translation());
-    // }
-//}

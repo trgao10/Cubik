@@ -28,7 +28,6 @@ private:
     int faceToFaceIdx(char fIdx);
 public:
     Cube * parentCube;
-    // std::vector<Cube *> childCubes;
     
     Cube();
     Cube(std::string cubetype);

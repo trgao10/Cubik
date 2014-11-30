@@ -49,7 +49,6 @@ void Viewer::drawWithNames() {
 
 void Viewer::endSelection(const QPoint&) {
     glFlush();
-
     // Get the number of objects that were seen through the pick matrix frustum. Reset GL_RENDER mode.
     GLint nbHits = glRenderMode(GL_RENDER);
 
@@ -85,34 +84,25 @@ void Viewer::postSelection(const QPoint&) {
     int selected = cubik.getSelectedFrameNumber();
     if ((selected >= 0) && (selected < NumFaces)) {
         Cube * ParentCube = cubik.faceCenterCube(selected);
-        // std::cout << "ParentCube location: " << ParentCube->getCubeFrame()->position() << std::endl;
-        // std::cout << "ParentCube expects child locations: " << std::endl;
         std::vector<qglviewer::Vec> expectedChildLocations;
         for (int j = 0; j < NumFaces; j++) {
             if (((2*cubik.faceNormal(j)-ParentCube->getCubeFrame()->position()).norm() < 1e-3) || ((2*cubik.faceNormal(j)+ParentCube->getCubeFrame()->position()).norm() < 1e-3))
                 continue;
             expectedChildLocations.push_back(ParentCube->getCubeFrame()->position()+2*cubik.faceNormal(j));
-            // std::cout << ParentCube->getCubeFrame()->position()+2*cubik.faceNormal(j) << std::endl;
         }
-        // std::cout << "Current cubes at these locations: " << std::endl;
         for (auto iter = expectedChildLocations.begin(); iter != expectedChildLocations.end(); ++iter) {
+            // should first get the matrix in world coordinate system, then transform it to the new frame coordinate system
             Cube * ChildCube = cubik.getEdgeCornerCubeAtPosition(*iter);
             qglviewer::Vec newTranslation = cubik.relativePositionByPosition(ChildCube, ParentCube);
-            // std::cout << "At position (" << *iter << "), CubeType = " << ChildCube->getCubeType() << ", parentCube = " << ChildCube->parentCube->getCubeType() << std::endl;
-            // std::cout << "ChildCube location: " << ChildCube->getCubeFrame()->position() << std::endl;
-            // std::cout << "After resetting translation, ChildCube location: " << ChildCube->getCubeFrame()->position() << std::endl;
+            qglviewer::Quaternion oldOrientation = ChildCube->getCubeFrame()->orientation();
+            // std::cout << oldOrientation << std::endl;
+            qglviewer::Quaternion newParentOrientation = ParentCube->getCubeFrame()->orientation();
+            // std::cout << newParentOrientation << std::endl;
             ChildCube->parentCube = ParentCube;
             ChildCube->getCubeFrame()->setReferenceFrame(ParentCube->getCubeFrame());
-            // std::cout << "After setting reference frame, ChildCube->position() = "  << ChildCube->getCubeFrame()->position() << std::endl;
             ChildCube->getCubeFrame()->setTranslation(newTranslation);
-            // std::cout << "After setting translation, ChildCube->position() = "  << ChildCube->getCubeFrame()->position() << std::endl;
-            // std::cout << "***************************************" << std::endl;
+            ChildCube->getCubeFrame()->setRotation(newParentOrientation.inverse()*oldOrientation);
         }
-        // for (int j = 0; j < NumEdges+NumCorners; j++)
-        //     for (std::vector<qglviewer::Vec>::size_type k = 0; k < expectedChildLocations.size(); k++) {
-        //         if ((cubik.edgeCornerCube(j)->getCubeFrame()->position()-expectedChildLocations[k]).norm() < 1e-3)
-        //             std::cout << "(" << cubik.edgeCornerCube(j)->getCubeFrame()->position() << "), CubeType = " << cubik.edgeCornerCube(j)->getCubeType() << ", current parent = " << cubik.edgeCornerCube(j)->parentCube->getCubeType()  << std::endl;
-        //     }
     }
 }
 
@@ -170,14 +160,7 @@ Cubik::Cubik() {
         faceCenterCube(j)->getCubeFrame()->setTranslation(2*faceNormal(j));
         faceCenterCube(j)->getCubeFrame()->setConstraint(faceConstraint);
     }
-    
-    // centerCube->childCubes.push_back(faceCenterCubes[0]);
-    // centerCube->childCubes.push_back(faceCenterCubes[1]);
-    // centerCube->childCubes.push_back(faceCenterCubes[2]);
-    // centerCube->childCubes.push_back(faceCenterCubes[3]);
-    // centerCube->childCubes.push_back(faceCenterCubes[4]);
-    // centerCube->childCubes.push_back(faceCenterCubes[5]);
-    
+        
     for (auto iter = solvedCube.begin(); iter != solvedCube.end(); ++iter) {
         Cube * TmpCube = new Cube(*iter);
         LocalConstraint * TmpConstraint = new LocalConstraint();
@@ -188,7 +171,6 @@ Cubik::Cubik() {
         TmpCube->getCubeFrame()->setReferenceFrame(ParentCube->getCubeFrame());
         TmpCube->getCubeFrame()->setTranslation(2*relativePositionByCubeType(TmpCube->getCubeType(), ParentCube->getCubeType()));
         TmpCube->getCubeFrame()->setConstraint(TmpConstraint);
-        // ParentCube->childCubes.push_back(TmpCube);
         edgeCornerCubes[iter-solvedCube.begin()] = TmpCube;
     }
 
@@ -201,7 +183,6 @@ Cubik::~Cubik() {
     for (int j = 0; j < NumFaces; j++)
         delete faceCenterCubes[j];
     delete centerCube;
-    // recursiveDeleteCube(centerCube);
 }
 
 void Cubik::draw() {
@@ -230,7 +211,8 @@ void Cubik::draw() {
         glPopMatrix();
     }
     
-    for (int j = 0; j < NumEdges+NumCorners; j++) {
+    for (int j = 0; j < NumEdges; j++) {
+    //for (int j = 0; j < NumEdges+NumCorners; j++) {
         glPushMatrix();
         glMultMatrixd(edgeCornerCube(j)->parentCube->getCubeFrame()->matrix());
         glMultMatrixd(edgeCornerCube(j)->getCubeFrame()->matrix());
@@ -240,14 +222,6 @@ void Cubik::draw() {
         glPopMatrix();
     }
 }
-
-// void Cubik::recursiveDeleteCube(Cube * cube) {
-//     if (cube == NULL)
-//         return;
-//     for (auto iter = cube->childCubes.begin(); iter != cube->childCubes.end(); ++iter)
-//         recursiveDeleteCube(*iter);
-//     delete cube;
-// }
 
 qglviewer::Vec Cubik::relativePositionByCubeType(std::string childCubeType, std::string parentCubeType) {
     // parentCubeType will always contain only one letter!
@@ -294,5 +268,13 @@ Cube * Cubik::getEdgeCornerCubeAtPosition(qglviewer::Vec pos) {
 //     for (auto iter = cube->childCubes.begin(); iter != cube->childCubes.end(); ++iter)
 //         recursiveDrawCube(*iter);
 //     glPopMatrix();
+// }
+
+// void Cubik::recursiveDeleteCube(Cube * cube) {
+//     if (cube == NULL)
+//         return;
+//     for (auto iter = cube->childCubes.begin(); iter != cube->childCubes.end(); ++iter)
+//         recursiveDeleteCube(*iter);
+//     delete cube;
 // }
 

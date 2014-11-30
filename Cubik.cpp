@@ -23,6 +23,8 @@ void Viewer::init() {
 
     // Make camera the default manipulated frame.
     setManipulatedFrame(camera()->frame());
+    
+    setShortcut(EXIT_VIEWER, Qt::CTRL+Qt::Key_Q);
 
     setMouseBinding(Qt::NoModifier, Qt::LeftButton, SELECT, true);
     

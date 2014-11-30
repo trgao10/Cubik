@@ -9,6 +9,7 @@ Cubik: a visualization project for Rubik's Cube
 + (press down) left button for roration
 + (press down) right button for translation
 + middle wheel for zoom in/out
++ press F to toggle on/off the face color indicator on bottom left corner
 
 #### Interactive Mode: select and rotate faces
 + double click on a face to activate it, then rotate

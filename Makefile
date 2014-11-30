@@ -18,7 +18,7 @@ CXXFLAGS      = -m64 -pipe -O2 -std=c++0x -D_REENTRANT -Wall -W -fPIE $(DEFINES)
 INCPATH       = -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I. -Iinclude -I/usr/include/qt5 -I/usr/include/qt5/QtOpenGL -I/usr/include/qt5/QtWidgets -I/usr/include/qt5/QtXml -I/usr/include/qt5/QtGui -I/usr/include/qt5/QtCore -I.
 LINK          = g++
 LFLAGS        = -m64 -Wl,-O1
-LIBS          = $(SUBLIBS) -L/usr/X11R6/lib64 -L./lib/QGLViewer/ -lQGLViewer -lGL -lQt5OpenGL -L/usr/lib/x86_64-linux-gnu -lQt5Widgets -lQt5Xml -lQt5Gui -lQt5Core -lpthread 
+LIBS          = $(SUBLIBS) -L/usr/X11R6/lib64 -L./lib/QGLViewer/ -lQGLViewer -lGL -lGLU -lQt5OpenGL -L/usr/lib/x86_64-linux-gnu -lQt5Widgets -lQt5Xml -lQt5Gui -lQt5Core -lpthread 
 AR            = ar cqs
 RANLIB        = 
 QMAKE         = /usr/lib/x86_64-linux-gnu/qt5/bin/qmake
@@ -473,6 +473,7 @@ Cubik.o: Cubik.cpp include/QGLViewer/manipulatedCameraFrame.h \
 		/usr/include/qt5/QtCore/qdatetime.h \
 		/usr/include/qt5/QtCore/QDateTime \
 		Cubik.h \
+		/usr/include/qt5/QtGui/QMouseEvent \
 		cube.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o Cubik.o Cubik.cpp
 
@@ -620,7 +621,11 @@ cube.o: cube.cpp cube.h \
 		/usr/include/qt5/QtGui/QClipboard \
 		/usr/include/qt5/QtGui/qclipboard.h \
 		/usr/include/qt5/QtCore/QTime \
-		/usr/include/qt5/QtCore/qdatetime.h
+		/usr/include/qt5/QtCore/qdatetime.h \
+		include/QGLViewer/manipulatedFrame.h \
+		include/QGLViewer/mouseGrabber.h \
+		/usr/include/qt5/QtCore/QEvent \
+		/usr/include/qt5/QtCore/QDateTime
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o cube.o cube.cpp
 
 main.o: main.cpp /usr/include/qt5/QtWidgets/qapplication.h \
@@ -774,7 +779,12 @@ main.o: main.cpp /usr/include/qt5/QtWidgets/qapplication.h \
 		/usr/include/qt5/QtGui/qclipboard.h \
 		/usr/include/qt5/QtCore/QTime \
 		/usr/include/qt5/QtCore/qdatetime.h \
-		cube.h
+		/usr/include/qt5/QtGui/QMouseEvent \
+		cube.h \
+		include/QGLViewer/manipulatedFrame.h \
+		include/QGLViewer/mouseGrabber.h \
+		/usr/include/qt5/QtCore/QEvent \
+		/usr/include/qt5/QtCore/QDateTime
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o main.cpp
 
 ####### Install

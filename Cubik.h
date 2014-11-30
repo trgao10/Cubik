@@ -6,61 +6,55 @@
 /**************************************************************/
 #include <QGLViewer/qglviewer.h>
 #include <QMouseEvent>
+#include <map>
 #include "cube.h"
 
 class Cubik {
-public:
-    Cubik();
-    ~Cubik();
-    void draw(bool names=false);
-
-    Cube * getCenterCube() {
-        return centerCube;
-    }
-    Cube * faceCenterCube(unsigned short i) {
-        return faceCenterCubes[i];
-    }
-    Cube * faceCenterCube(std::string c) {
-        if (c == "U")
-            return faceCenterCubes[0];
-        else if (c == "D")
-            return faceCenterCubes[1];
-        else if (c == "F")
-            return faceCenterCubes[2];
-        else if (c == "B")
-            return faceCenterCubes[3];
-        else if (c == "L")
-            return faceCenterCubes[4];
-        else if (c == "R")
-            return faceCenterCubes[5];
-        else
-            return NULL;
-    }
-    Cube * edgeCube(unsigned short i) {
-        return edgeCubes[i];
-    }
-    qglviewer::Vec faceNormal(unsigned short i) {
-        return faceNormals[i];
-    }
-    std::string faceColor(unsigned short c) {
-        return faceColors[c];
-    }
-    void setSelectedFrameNumber(unsigned short nb) {
-        selected = nb;
-    }
 private:
     Cube * centerCube;
     Cube * faceCenterCubes[NumFaces];
-    Cube * edgeCubes[NumEdges];
-    
-    unsigned short selected;
-    
+    Cube * edgeCornerCubes[NumEdges+NumCorners];
+
+    std::vector<std::string> solvedCube = {"UF", "UR", "UB", "UL", "DF", "DR", "DB", "DL", "FR", "FL", "BR", "BL", "UFR", "URB", "UBL", "ULF", "DRF", "DFL", "DLB", "DBR"};
+    int selected;
     qglviewer::Vec faceNormals[NumFaces]; // U, D, F, B, L, R
-    const std::vector<std::string> faceColors = {"U", "D", "F", "B", "L", "R"}; // U, D, F, B, L, R
-    
-    void drawCenter();
-    // void drawFace(unsigned short i);
-    void drawFaceCenter(unsigned short i);
+    std::map<Cube *, qglviewer::Vec> edgeCornerPosition;
+    // void recursiveDrawCube(Cube * cube);
+    // void recursiveDeleteCube(Cube * cube);
+public:
+    Cubik();
+    ~Cubik();
+    void draw();
+
+    bool isSpinning();
+    Cube * getCenterCube() {
+        return centerCube;
+    }
+    Cube * faceCenterCube(int i) {
+        return faceCenterCubes[i];
+    }
+    Cube * faceCenterCube(std::string c) {
+        return faceCenterCubes[faceToIdx[c[0]]];
+    }
+    Cube * edgeCornerCube(int i) {
+        return edgeCornerCubes[i];
+    }
+    qglviewer::Vec faceNormal(int i) {
+        return faceNormals[i];
+    }
+    std::map<char, int> faceToIdx;
+    int getSelectedFrameNumber() {
+        return selected;
+    }
+    void setSelectedFrameNumber(int nb) {
+        selected = nb;
+    }
+    void updateEdgeCornerPosition();
+    Cube * getEdgeCornerCubeAtPosition(qglviewer::Vec pos);
+    qglviewer::Vec relativePositionByCubeType(std::string childCubeType, std::string parentCubeType);
+    qglviewer::Vec relativePositionByPosition(Cube * ChildCube, Cube * ParentCube) {
+        return (ChildCube->getCubeFrame()->position() - ParentCube->getCubeFrame()->position());
+    }
 };
 
 class Viewer : public QGLViewer {
@@ -70,6 +64,7 @@ protected :
     void initSpotLight();
     
     virtual void drawWithNames();
+    virtual void endSelection(const QPoint&);
     virtual void postSelection(const QPoint& point);
     
     virtual void mouseReleaseEvent(QMouseEvent * e);

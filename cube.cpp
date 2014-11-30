@@ -55,7 +55,6 @@ Cube::Cube(std::string cubetype, CubeFrame * cubeFrame_) {
 }
 
 Cube::~Cube() {
-    // delete cubeFrame;
 }
 
 void Cube::draw() {
@@ -175,4 +174,46 @@ bool CubeFrame::checkAlignedWithFrame (const CubeFrame * const frame) {
     }
     
     return false;
+}
+
+qglviewer::Vec Cube::getTranslationVector() {
+    qglviewer::Vec tVec(0, 0, 0);
+    for (std::string::size_type j = 0; j < CubeType.size(); j++) {
+        tVec += faceToNormal(CubeType[j]);
+    }
+    return tVec;
+}
+
+qglviewer::Vec Cube::faceToNormal(char fId) {
+    if (fId == 'U')
+        return qglviewer::Vec( 0.0f, 1.0f, 0.0f);
+    else if (fId == 'D')
+        return qglviewer::Vec( 0.0f,-1.0f, 0.0f);
+    else if (fId == 'F')
+        return qglviewer::Vec( 0.0f, 0.0f, 1.0f);
+    else if (fId == 'B')
+        return qglviewer::Vec( 0.0f, 0.0f,-1.0f);
+    else if (fId == 'L')
+        return qglviewer::Vec(-1.0f, 0.0f, 0.0f);
+    else if (fId == 'R')
+        return qglviewer::Vec( 1.0f, 0.0f, 0.0f);
+    else
+        return qglviewer::Vec( 0.0f, 0.0f, 0.0f);
+}
+
+int Cube::faceToFaceIdx(char fId) {
+    if (fId == 'U')
+        return 0;
+    else if (fId == 'D')
+        return 1;
+    else if (fId == 'F')
+        return 2;
+    else if (fId == 'B')
+        return 3;
+    else if (fId == 'L')
+        return 4;
+    else if (fId == 'R')
+        return 5;
+    else
+        return -1;
 }

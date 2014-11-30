@@ -60,17 +60,20 @@ protected :
     virtual void init();
     virtual void draw();
     virtual void postDraw();
+
     void initSpotLight();
     
     virtual void drawWithNames();
     virtual void endSelection(const QPoint&);
     virtual void postSelection(const QPoint& point);
     
+    virtual void keyPressEvent(QKeyEvent *e);
     virtual void mouseReleaseEvent(QMouseEvent * e);
 
 private:
   Cubik cubik;
   qglviewer::Vec orig, dir, selectedPoint;
+  bool showCornerAxis;
   
   void drawCornerAxis();
 };

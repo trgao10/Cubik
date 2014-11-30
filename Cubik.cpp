@@ -37,6 +37,7 @@ void Viewer::init() {
     setWheelBinding(Qt::NoModifier, QGLViewer::FRAME, QGLViewer::ZOOM);
 
     initSpotLight();
+    showCornerAxis = true;
 }
 
 void Viewer::draw() {
@@ -130,7 +131,8 @@ void Viewer::drawCornerAxis() {
 
 void Viewer::postDraw() {
     QGLViewer::postDraw();
-    drawCornerAxis();
+    if (showCornerAxis)
+        drawCornerAxis();
 }
 
 void Viewer::drawWithNames() {
@@ -228,6 +230,24 @@ void Viewer::postSelection(const QPoint&) {
             ChildCube->getCubeFrame()->setRotation(newParentOrientation.inverse()*oldOrientation);
         }
     }
+}
+
+void Viewer::keyPressEvent(QKeyEvent *e) {
+    // Get event modifiers key
+    const Qt::KeyboardModifiers modifiers = e->modifiers();
+
+    bool handled = false;
+    if ((e->key()==Qt::Key_F) && (modifiers==Qt::NoButton)) {
+        if (showCornerAxis)
+            showCornerAxis = false;
+        else if (!showCornerAxis)
+            showCornerAxis = true;
+        handled = true;
+        updateGL();
+    }
+    
+    if (!handled)
+        QGLViewer::keyPressEvent(e);
 }
 
 void Viewer::mouseReleaseEvent(QMouseEvent * e) {

@@ -69,6 +69,7 @@ protected :
 
 private:
   Cubik cubik;
+  qglviewer::Vec orig, dir, selectedPoint;
 };
 
 #endif

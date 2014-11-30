@@ -9,12 +9,14 @@ using namespace std;
 /**************************************************************/
 void Viewer::initSpotLight() {
     glMatrixMode(GL_MODELVIEW);
-    glEnable(GL_LIGHT1);
+    glDisable(GL_LIGHTING);
     glLoadIdentity();
 }
 
 void Viewer::init() {
     restoreStateFromFile();
+    
+    glLineWidth(3.0);
 
     setSceneBoundingBox(Vec( 3.0f, 3.0f, 3.0f), Vec(-3.0f,-3.0f,-3.0f));
     camera()->showEntireScene();
@@ -22,7 +24,7 @@ void Viewer::init() {
     // Make camera the default manipulated frame.
     setManipulatedFrame(camera()->frame());
 
-    // setMouseBinding(Qt::NoModifier, Qt::LeftButton, SELECT, true);
+    setMouseBinding(Qt::NoModifier, Qt::LeftButton, SELECT, true);
     
     setMouseBinding(Qt::ControlModifier, Qt::LeftButton, QGLViewer::CAMERA, QGLViewer::ROTATE);
     setMouseBinding(Qt::ControlModifier, Qt::RightButton, QGLViewer::CAMERA, QGLViewer::TRANSLATE);
@@ -38,36 +40,66 @@ void Viewer::init() {
 }
 
 void Viewer::draw() {
-    glDisable(GL_CULL_FACE);
     cubik.draw();
+    
+    // // Draw the intersection line
+    // glBegin(GL_LINES);
+    // glVertex3fv(orig);
+    // glVertex3fv(orig + 100.0*dir);
+    // glEnd();
 }
 
 void Viewer::drawWithNames() {
-    glDisable(GL_CULL_FACE);
     cubik.draw();
 }
 
-void Viewer::endSelection(const QPoint&) {
+void Viewer::endSelection(const QPoint& point) {
     glFlush();
-    // Get the number of objects that were seen through the pick matrix frustum. Reset GL_RENDER mode.
-    GLint nbHits = glRenderMode(GL_RENDER);
+    glRenderMode(GL_RENDER);
+    
+    // Compute orig and dir, used to draw a representation of the intersecting line
+    camera()->convertClickToLine(point, orig, dir);
 
-    if (nbHits <= 0)
-        setSelectedName(-1);
-    else {
-        GLuint zMin = (selectBuffer())[1];
-        setSelectedName((selectBuffer())[3]);
-        for (int i=1; i<nbHits; ++i)
-            if ((selectBuffer())[4*i+1] < zMin) {
-                zMin = (selectBuffer())[4*i+1];
-                setSelectedName((selectBuffer())[4*i+3]);
+    // Find the selectedPoint coordinates, using camera()->pointUnderPixel().
+    bool found;
+    selectedPoint = camera()->pointUnderPixel(point, found);
+    selectedPoint -= 0.01f*dir; // Small offset to make point clearly visible.
+    // Note that "found" is different from (selectedObjectId()>=0) because of the size of the select region.
+    
+    // We compute the intersection of the line with each face
+    // of the bounding box and pick the first object being hit.
+    // This is fairly fundamental for ray-tracing.
+    qreal tmin = 1000;
+    int selectedIdx = -1;
+    for (int j = 0; j < NumFaces; j++) {
+        qreal t = (cubik.faceCenterCube(j)->getCubeFrame()->position()*3.0/2.0-selectedPoint)*cubik.faceNormal(j)/(dir*cubik.faceNormal(j));
+        qglviewer::Vec localCoords = cubik.faceCenterCube(j)->getCubeFrame()->coordinatesOf(selectedPoint+t*dir-cubik.faceCenterCube(j)->getCubeFrame()->position()*3.0/2.0);
+        if ((fabs(cubik.faceCenterCube(j)->getCubeFrame()->position().x)>1e-3) && (fabs(localCoords.y) <3) && (fabs(localCoords.z) <3)) {
+            if ((t >= 0) && (t < tmin)) {
+                tmin = t;
+                selectedIdx = j;
             }
+        }
+        else if ((fabs(cubik.faceCenterCube(j)->getCubeFrame()->position().y)>1e-3) && (fabs(localCoords.x) <3) && (fabs(localCoords.z) <3)) {
+            if ((t >= 0) && (t < tmin)) {
+                tmin = t;
+                selectedIdx = j;
+            }
+        }
+        else if ((fabs(cubik.faceCenterCube(j)->getCubeFrame()->position().z)>1e-3) && (fabs(localCoords.x) <3) && (fabs(localCoords.y) <3)) {
+            if ((t >= 0) && (t < tmin)) {
+                tmin = t;
+                selectedIdx = j;
+            }
+        }
     }
+    setSelectedName(selectedIdx);
 }
 
 void Viewer::postSelection(const QPoint&) {
     if (manipulatedFrame()->isSpinning())
         return;
+    
     cubik.updateEdgeCornerPosition();
     if (selectedName() == -1) {
         setManipulatedFrame(camera()->frame());

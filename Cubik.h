@@ -59,6 +59,7 @@ class Viewer : public QGLViewer {
 protected :
     virtual void init();
     virtual void draw();
+    virtual void postDraw();
     void initSpotLight();
     
     virtual void drawWithNames();
@@ -70,6 +71,8 @@ protected :
 private:
   Cubik cubik;
   qglviewer::Vec orig, dir, selectedPoint;
+  
+  void drawCornerAxis();
 };
 
 #endif

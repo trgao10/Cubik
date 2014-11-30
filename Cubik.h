@@ -19,8 +19,6 @@ private:
     int selected;
     qglviewer::Vec faceNormals[NumFaces]; // U, D, F, B, L, R
     std::map<Cube *, qglviewer::Vec> edgeCornerPosition;
-    // void recursiveDrawCube(Cube * cube);
-    // void recursiveDeleteCube(Cube * cube);
 public:
     Cubik();
     ~Cubik();

@@ -320,7 +320,10 @@ Cubik::Cubik() {
         edgeCornerCubes[iter-solvedCube.begin()] = TmpCube;
     }
 
+    for (int j = 0; j < NumEdges+NumCorners; j++)
+        currentStatus.push_back("");
     selected = 100; // camera is selected by default
+    nSteps = 0;
 }
 
 Cubik::~Cubik() {
@@ -332,15 +335,25 @@ Cubik::~Cubik() {
 }
 
 void Cubik::draw() {
-    if(!isSpinning()) {
-        updateEdgeCornerPosition();
-    }
+    // std::cout << "CurrentStatus: " << std::endl;
+    // for (auto iter = currentStatus.begin(); iter != currentStatus.end(); ++iter) {
+    //     std::cout << *iter << " ";
+    // }
+    // std::cout << std::endl;
+
     for (int j = 0; j < NumFaces; j++) {
         if (faceCenterCube(j)->getCubeFrame()->isSpinning()) {
             // check if the faceCenterCube has been aligned to the centerCube
-            if (faceCenterCube(j)->getCubeFrame()->checkAlignedWithFrame(centerCube->getCubeFrame()))
+            if (faceCenterCube(j)->getCubeFrame()->checkAlignedWithFrame(centerCube->getCubeFrame())) {
                 faceCenterCube(j)->getCubeFrame()->stopSpinning();
+                updateEdgeCornerPosition();
+                // std::cout << nSteps << std::endl;
+            }
         }
+    }
+    
+    if(!isSpinning()) {
+        updateEdgeCornerPosition();
     }
     
     glPushMatrix();
@@ -357,7 +370,6 @@ void Cubik::draw() {
         glPopMatrix();
     }
     
-    // for (int j = 0; j < NumEdges; j++) {
     for (int j = 0; j < NumEdges+NumCorners; j++) {
         glPushMatrix();
         glMultMatrixd(edgeCornerCube(j)->parentCube->getCubeFrame()->matrix());
@@ -391,6 +403,20 @@ void Cubik::updateEdgeCornerPosition() {
     for (int j = 0; j < NumEdges+NumCorners; j++) {
         edgeCornerPosition[edgeCornerCube(j)] = edgeCornerCube(j)->getCubeFrame()->position();
     }
+    
+    bool changedFlag = false;
+    for (int j = 0; j < NumEdges+NumCorners; j++) {
+        for (std::vector<qglviewer::Vec>::size_type k = 0; k < currentStatus.size(); k++) {
+            if ((solvedCubeLocations[k]-edgeCornerPosition[edgeCornerCube(j)]).norm() < 1e-3) {
+                if ((currentStatus[k] != "") && (currentStatus[k] != edgeCornerCube(j)->getCubeType())) {
+                    changedFlag = true;
+                }
+                currentStatus[k] = edgeCornerCube(j)->getCubeType();
+            }
+        }
+    }
+    if (changedFlag)
+        increase_nSteps();
 }
 
 Cube * Cubik::getEdgeCornerCubeAtPosition(qglviewer::Vec pos) {

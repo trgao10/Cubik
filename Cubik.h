@@ -15,7 +15,34 @@ private:
     Cube * faceCenterCubes[NumFaces];
     Cube * edgeCornerCubes[NumEdges+NumCorners];
 
-    std::vector<std::string> solvedCube = {"UF", "UR", "UB", "UL", "DF", "DR", "DB", "DL", "FR", "FL", "BR", "BL", "UFR", "URB", "UBL", "ULF", "DRF", "DFL", "DLB", "DBR"};
+    std::vector<std::string> solvedCube = { "UF", "UR", "UB", "UL",
+                                            "DF", "DR", "DB", "DL",
+                                            "FR", "FL", "BR", "BL",
+                                            "UFR", "URB", "UBL", "ULF",
+                                            "DRF", "DFL", "DLB", "DBR" };
+    std::vector<qglviewer::Vec> solvedCubeLocations = { qglviewer::Vec( 0.0f, 2.0f, 2.0f), // UF
+                                                        qglviewer::Vec( 2.0f, 2.0f, 0.0f), // UR
+                                                        qglviewer::Vec( 0.0f, 2.0f,-2.0f), // UB
+                                                        qglviewer::Vec(-2.0f, 2.0f, 0.0f), // UL
+                                                        qglviewer::Vec( 0.0f,-2.0f, 2.0f), // DF
+                                                        qglviewer::Vec( 2.0f,-2.0f, 0.0f), // DR
+                                                        qglviewer::Vec( 0.0f,-2.0f,-2.0f), // DB
+                                                        qglviewer::Vec(-2.0f,-2.0f, 0.0f), // DL
+                                                        qglviewer::Vec( 2.0f, 0.0f, 2.0f), // FR
+                                                        qglviewer::Vec(-2.0f, 0.0f, 2.0f), // FL
+                                                        qglviewer::Vec( 2.0f, 0.0f,-2.0f), // BR
+                                                        qglviewer::Vec(-2.0f, 0.0f,-2.0f), // BL
+                                                        qglviewer::Vec( 2.0f, 2.0f, 2.0f), // UFR
+                                                        qglviewer::Vec( 2.0f, 2.0f,-2.0f), // URB
+                                                        qglviewer::Vec(-2.0f, 2.0f,-2.0f), // UBL
+                                                        qglviewer::Vec(-2.0f, 2.0f, 2.0f), // ULF
+                                                        qglviewer::Vec( 2.0f,-2.0f, 2.0f), // DRF
+                                                        qglviewer::Vec(-2.0f,-2.0f, 2.0f), // DFL
+                                                        qglviewer::Vec(-2.0f,-2.0f,-2.0f), // DLB
+                                                        qglviewer::Vec( 2.0f,-2.0f,-2.0f), // DBR
+    };
+    std::vector<std::string> currentStatus;
+    int nSteps;
     int selected;
     qglviewer::Vec faceNormals[NumFaces]; // U, D, F, B, L, R
     std::map<Cube *, qglviewer::Vec> edgeCornerPosition;
@@ -46,6 +73,9 @@ public:
     }
     void setSelectedFrameNumber(int nb) {
         selected = nb;
+    }
+    void increase_nSteps() {
+        nSteps++;
     }
     void updateEdgeCornerPosition();
     Cube * getEdgeCornerCubeAtPosition(qglviewer::Vec pos);

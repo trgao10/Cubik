@@ -84,6 +84,11 @@ The solution algorithm consists of 7 phases in general:
 
 The hint mode specifies which phase of the algorithm the user is currently at.
 
+## GNU GPL License
+This code is released under the terms of the GNU-GPL license Version 3. Any software you create that uses any part of this source code (or its compiled version) will have to be open sourced under the same conditions.
+
+If you would like to use the QGLViewer library in your applications, you should consult its [license page](http://www.libqglviewer.com/download.html).
+
 ## Contributors
 
 Tingran Gao (<trgao10@math.duke.edu>)

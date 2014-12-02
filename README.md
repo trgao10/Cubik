@@ -54,6 +54,7 @@ That's all. Happy Cubik-ing!
 ```
 
 ## Notation and Algorithm for Solving Rubik's Cube
+
 The solution integrated into this version of Cubik is based on [Mark Jeay's algorithm](http://www.jeays.net/rubiks.htm). This algorithm is classic for beginner-level users since it is solved ituitively layer by layer. However, it is definetely not a fast algorithm which involves more steps than some other solutions.
 
 The notation is adapted from an earlier [Rubik's Cube Contest](http://tomas.rokicki.com/cubecontest/). The 6 faces of the cube are denoted as U (top), D(bottom), F(front), B(back), L(left), and R(right), respectively. Each solution step provided in the hint mode indicates one of the following three operations on the corresponding face:
@@ -83,3 +84,15 @@ The solution algorithm consists of 7 phases in general:
 7. put *down layer corner pieces* in correct directions.
 
 The hint mode specifies which phase of the algorithm the user is currently at.
+
+## Contributors
+
+Tingran Gao <trgao10@math.duke.edu>
+
+Wenyuan Jiao <wyjiaonju@gmail.com>
+
+Jincheng Li <lijincheng8801@gmail.com>
+
+## Acknowledgement
+
+The contributors thank Shiwen Zhao <shiwen.zhao@duke.edu> for compilation testing this project.

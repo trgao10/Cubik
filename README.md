@@ -3,6 +3,9 @@ Cubik
 
 Cubik: a visualization project for Rubik's Cube
 
+![Cubik Screenshot](/images/Cubik.png)
+
+
 ## Basic Operations
 
 #### View Mode: view cube with mouse

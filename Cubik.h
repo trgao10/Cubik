@@ -102,6 +102,7 @@ public:
         return (ChildCube->getCubeFrame()->position() - ParentCube->getCubeFrame()->position());
     }
     std::vector<std::string> solveCube();
+    void solveCubeStoreSolution();
 };
 
 class Viewer : public QGLViewer {

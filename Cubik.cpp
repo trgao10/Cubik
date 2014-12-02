@@ -304,8 +304,13 @@ void Viewer::keyPressEvent(QKeyEvent *e) {
     } else if ((e->key()==Qt::Key_H) && (modifiers==Qt::NoButton)) {
         if (hintMode)
             hintMode = false;
-        else if (!hintMode)
+        else if (!hintMode) {
+            std::cout << "solving cubes..." << std::endl;
+            cubik.solveCubeStoreSolution();
+            std::cout << "solved!" << std::endl;
+            
             hintMode = true;
+        }
         handled = true;
         updateGL();
     }
@@ -395,6 +400,8 @@ Cubik::Cubik() {
         currentStatus.push_back("");
     selected = 100; // camera is selected by default
     nSteps = 0;
+    
+    updateEdgeCornerPosition();
 }
 
 Cubik::~Cubik() {
@@ -493,10 +500,7 @@ void Cubik::updateEdgeCornerPosition() {
     }
     if (changedFlag)
         increase_nSteps();
-    solutionToCurrentStatus.erase(solutionToCurrentStatus.begin(), solutionToCurrentStatus.end());
-    // std::cout << "solving cubes..." << std::endl;
-    solutionToCurrentStatus = solveCube();
-    // std::cout << "solved!" << std::endl;
+    solveCubeStoreSolution();
 }
 
 Cube * Cubik::getEdgeCornerCubeAtPosition(qglviewer::Vec pos) {
@@ -507,3 +511,7 @@ Cube * Cubik::getEdgeCornerCubeAtPosition(qglviewer::Vec pos) {
     return NULL;
 }
 
+void Cubik::solveCubeStoreSolution() {
+    solutionToCurrentStatus.erase(solutionToCurrentStatus.begin(), solutionToCurrentStatus.end());
+    solutionToCurrentStatus = solveCube();
+}

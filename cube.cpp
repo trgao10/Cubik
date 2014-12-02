@@ -61,25 +61,25 @@ void Cube::draw() {
     GLfloat colors[72] = {0};
     if (find(CubeType.begin(), CubeType.end(), 'U') != CubeType.end()) {
         for (int j = 0; j < 4; j++) {
-            colors[24+3*j] = 1;
-            colors[24+3*j+1] = 1;
+            colors[24+3*j] = 0.8;
+            colors[24+3*j+1] = 0.8;
         }
     }
     if (find(CubeType.begin(), CubeType.end(), 'D') != CubeType.end()) {
         for (int j = 0; j < 4; j++) {
-            colors[48+3*j] = 1;
-            colors[48+3*j+1] = 1;
-            colors[48+3*j+2] = 1;
+            colors[48+3*j] = 0.8;
+            colors[48+3*j+1] = 0.8;
+            colors[48+3*j+2] = 0.8;
         }
     }
     if (find(CubeType.begin(), CubeType.end(), 'F') != CubeType.end()) {
         for (int j = 0; j < 4; j++) {
-            colors[3*j+2] = 1;
+            colors[3*j+2] = 0.5;
         }
     }
     if (find(CubeType.begin(), CubeType.end(), 'B') != CubeType.end()) {
         for (int j = 0; j < 4; j++) {
-            colors[60+3*j+1] = 1;
+            colors[60+3*j+1] = 0.6;
         }
     }
     if (find(CubeType.begin(), CubeType.end(), 'L') != CubeType.end()) {
@@ -91,15 +91,15 @@ void Cube::draw() {
     }
     if (find(CubeType.begin(), CubeType.end(), 'R') != CubeType.end()) {
         for (int j = 0; j < 4; j++) {
-            colors[12+3*j] = 1;
+            colors[12+3*j] = 0.8;
         }
     }
-    // GLfloat colors[]   = {  0, 0, 1,   0, 0, 1,   0, 0, 1,   0, 0, 1,   // v0,v1,v2,v3 (front)
-    //                         1, 0, 0,   1, 0, 0,   1, 0, 0,   1, 0, 0,   // v0,v3,v4,v5 (right)
-    //                         1, 1, 0,   1, 1, 0,   1, 1, 0,   1, 1, 0,   // v0,v5,v6,v1 (top)
-    //                         1,0.5,0,   1,0.5,0,   1,0.5,0,   1,0.5,0,   // v1,v6,v7,v2 (left)
-    //                         1, 1, 1,   1, 1, 1,   1, 1, 1,   1, 1, 1,   // v7,v4,v3,v2 (bottom)
-    //                         0, 1, 0,   0, 1, 0,   0, 1, 0,   0, 1, 0 }; // v4,v7,v6,v5 (back)
+    // GLfloat colors[]   = {  0, 0, 1,   0, 0, 1,   0, 0, 1,   0, 0, 1,   // v0,v1,v2,v3 (front "B", blue)
+    //                         1, 0, 0,   1, 0, 0,   1, 0, 0,   1, 0, 0,   // v0,v3,v4,v5 (right "R", red)
+    //                         1, 1, 0,   1, 1, 0,   1, 1, 0,   1, 1, 0,   // v0,v5,v6,v1 (top "U", yellow)
+    //                         1,0.5,0,   1,0.5,0,   1,0.5,0,   1,0.5,0,   // v1,v6,v7,v2 (left "L", orange)
+    //                         1, 1, 1,   1, 1, 1,   1, 1, 1,   1, 1, 1,   // v7,v4,v3,v2 (bottom "D", white)
+    //                         0, 1, 0,   0, 1, 0,   0, 1, 0,   0, 1, 0 }; // v4,v7,v6,v5 (back "B", green)
 
     glEnable(GL_LIGHTING);
     

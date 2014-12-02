@@ -35,6 +35,7 @@ public:
     ~Cube();
     
     void draw();
+    void drawWithText();
     
     bool isFaceCenterCube() { return (CubeType.size() == 1); }
     std::string getCubeType() { return CubeType; }

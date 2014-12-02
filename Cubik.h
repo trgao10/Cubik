@@ -11,7 +11,7 @@
 
 class Cubik {
 private:
-    Cube * cornerCube;
+    Cube * indicatorCube;
     Cube * centerCube;
     Cube * faceCenterCubes[NumFaces];
     Cube * edgeCornerCubes[NumEdges+NumCorners];
@@ -53,11 +53,14 @@ public:
     Cubik();
     ~Cubik();
     void draw();
-    void drawCornerCube() { cornerCube->draw(); }
+    void drawIndicatorCube() { indicatorCube->draw(); }
 
     bool checkResumeSpinning() { return resumeSpinning; }
     void setResumeSpinning(bool ifResume) { resumeSpinning = ifResume; }
     bool isSpinning();
+    Cube * getIndicatorCube () {
+        return indicatorCube;
+    }
     Cube * getCenterCube() {
         return centerCube;
     }
@@ -111,10 +114,10 @@ protected :
 private:
   Cubik cubik;
   qglviewer::Vec orig, dir, selectedPoint;
-  bool showCornerAxis;
+  bool showIndicatorAxis;
   
-  void drawCornerAxis();
-  void drawCornerCube();
+  void drawIndicatorAxis();
+  void drawIndicatorCube();
 };
 
 #endif

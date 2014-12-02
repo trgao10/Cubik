@@ -40,7 +40,7 @@ void Viewer::init() {
     setWheelBinding(Qt::NoModifier, QGLViewer::FRAME, QGLViewer::ZOOM);
 
     initSpotLight();
-    showCornerAxis = true;
+    showIndicatorAxis = true;
 }
 
 void Viewer::draw() {
@@ -53,7 +53,7 @@ void Viewer::draw() {
     // glEnd();
 }
 
-void Viewer::drawCornerCube() {
+void Viewer::drawIndicatorCube() {
     int viewport[4];
     int scissor[4];
 
@@ -69,14 +69,33 @@ void Viewer::drawCornerCube() {
     // original image.
     glClear(GL_DEPTH_BUFFER_BIT);
 
-    cubik.drawCornerCube();
+    cubik.drawIndicatorCube();
+    
+    // display text
+    qreal threshold = -0.2;
+    glDisable(GL_LIGHTING);
+    glDisable(GL_DEPTH_TEST);
+    if (-camera()->viewDirection()*Vec( 0.0f, 1.0f, 0.0f) > threshold)
+        renderText( 0.0f, 2.0f, 0.0f, "U");
+    if (-camera()->viewDirection()*Vec( 0.0f,-1.0f, 0.0f) > threshold)
+        renderText( 0.0f,-2.0f, 0.0f, "D");
+    if (-camera()->viewDirection()*Vec( 0.0f, 0.0f, 1.0f) > threshold)
+        renderText( 0.0f, 0.0f, 2.0f, "F");
+    if (-camera()->viewDirection()*Vec( 0.0f, 0.0f,-1.0f) > threshold)
+        renderText( 0.0f, 0.0f,-2.0f, "B");
+    if (-camera()->viewDirection()*Vec(-1.0f, 0.0f, 0.0f) > threshold)
+        renderText(-2.0f, 0.0f, 0.0f, "L");
+    if (-camera()->viewDirection()*Vec( 1.0f, 0.0f, 0.0f) > threshold)
+        renderText( 2.0f, 0.0f, 0.0f, "R");
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_LIGHTING);
 
     // The viewport and the scissor are restored.
     glScissor(scissor[0],scissor[1],scissor[2],scissor[3]);
     glViewport(viewport[0],viewport[1],viewport[2],viewport[3]);
 }
 
-void Viewer::drawCornerAxis() {
+void Viewer::drawIndicatorAxis() {
 	int viewport[4];
 	int scissor[4];
 
@@ -157,9 +176,9 @@ void Viewer::drawCornerAxis() {
 
 void Viewer::postDraw() {
     QGLViewer::postDraw();
-    if (showCornerAxis)
-        drawCornerCube();
-        // drawCornerAxis();
+    if (showIndicatorAxis)
+        drawIndicatorCube();
+        // drawIndicatorAxis();
 }
 
 void Viewer::drawWithNames() {
@@ -266,10 +285,10 @@ void Viewer::keyPressEvent(QKeyEvent *e) {
 
     bool handled = false;
     if ((e->key()==Qt::Key_F) && (modifiers==Qt::NoButton)) {
-        if (showCornerAxis)
-            showCornerAxis = false;
-        else if (!showCornerAxis)
-            showCornerAxis = true;
+        if (showIndicatorAxis)
+            showIndicatorAxis = false;
+        else if (!showIndicatorAxis)
+            showIndicatorAxis = true;
         handled = true;
         updateGL();
     }
@@ -309,7 +328,7 @@ Cubik::Cubik() {
     faceToIdx['L'] = 4;
     faceToIdx['R'] = 5;
     
-    cornerCube = new Cube("UDFBLR");
+    indicatorCube = new Cube("UDFBLR");
     centerCube = new Cube("");
     faceCenterCubes[0] = new Cube("U");
     faceCenterCubes[1] = new Cube("D");
@@ -367,7 +386,7 @@ Cubik::~Cubik() {
     for (int j = 0; j < NumFaces; j++)
         delete faceCenterCubes[j];
     delete centerCube;
-    delete cornerCube;
+    delete indicatorCube;
 }
 
 void Cubik::draw() {

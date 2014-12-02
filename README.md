@@ -87,12 +87,12 @@ The hint mode specifies which phase of the algorithm the user is currently at.
 
 ## Contributors
 
-Tingran Gao <trgao10@math.duke.edu>
+Tingran Gao (<trgao10@math.duke.edu>)
 
-Wenyuan Jiao <wyjiaonju@gmail.com>
+Wenyuan Jiao (<wyjiaonju@gmail.com>)
 
-Jincheng Li <lijincheng8801@gmail.com>
+Jincheng Li (<lijincheng8801@gmail.com>)
 
 ## Acknowledgement
 
-The contributors thank Shiwen Zhao <shiwen.zhao@duke.edu> for compilation testing this project.
+The contributors thank Shiwen Zhao (<shiwen.zhao@duke.edu>) for compilation testing this project.

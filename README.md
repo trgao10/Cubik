@@ -99,4 +99,4 @@ Jincheng Li (<lijincheng8801@gmail.com>)
 
 ## Acknowledgement
 
-The contributors thank Shiwen Zhao (<shiwen.zhao@duke.edu>) for compilation testing this project.
+The contributors thank Shiwen Zhao (<shiwen.zhao@duke.edu>) for compilation testing this project. The first contributor also thanks Gilles Debunne (<contact@libqglviewer.com>) for many useful discussions.

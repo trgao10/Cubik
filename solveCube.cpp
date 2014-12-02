@@ -277,6 +277,10 @@ vector<string> Cubik::solveCube() {
     bool first_corner = false;
     for (int i = 12;  first_corner == false; i++){
 
+        if (currentState[12]==12 && currentState[13]==13 && currentState[14]==14 && currentState[15]==15 && currentState[32]==0 && currentState[33]==0 && currentState[34]==0 && currentState[35]==0){
+            first_corner = true;
+        }
+
         if (i==16){i=12;}
 
         if (currentState[i]==i && currentState[i+20]==0){continue;}

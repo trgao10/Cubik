@@ -173,6 +173,12 @@ vector<string> Cubik::solveCube() {
     bool first_edge = false;
     for (int i = 0; first_edge ==false ; i++){
 
+        if (currentState[0]==0 && currentState[1]==1 && currentState[2]==2 && currentState[3]==3 && currentState[20]==0 && currentState[21]==0 && currentState[22]==0 && currentState[23]==0){
+            first_edge = true;
+        }
+
+        if(i==4){i=0;}
+
         if (currentState[i]==i && currentState[i+20]==0){continue;}
 
         int index = checkindex(i);
@@ -244,7 +250,6 @@ vector<string> Cubik::solveCube() {
             first_edge = true;
         }
 
-        if(i==3){i=-1;}
 
     }
 

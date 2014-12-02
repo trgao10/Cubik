@@ -61,8 +61,8 @@ void Cube::draw() {
     GLfloat colors[72] = {0};
     if (find(CubeType.begin(), CubeType.end(), 'U') != CubeType.end()) {
         for (int j = 0; j < 4; j++) {
-            colors[24+3*j] = 0.8;
-            colors[24+3*j+1] = 0.8;
+            colors[24+3*j] = 0.9;
+            colors[24+3*j+1] = 0.9;
         }
     }
     if (find(CubeType.begin(), CubeType.end(), 'D') != CubeType.end()) {

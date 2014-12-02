@@ -85,7 +85,8 @@ void Cube::draw() {
     if (find(CubeType.begin(), CubeType.end(), 'L') != CubeType.end()) {
         for (int j = 0; j < 4; j++) {
             colors[36+3*j] = 1;
-            colors[36+3*j+2] = 1;
+            colors[36+3*j+1] = 0.4;
+            // colors[36+3*j+2] = 1;
         }
     }
     if (find(CubeType.begin(), CubeType.end(), 'R') != CubeType.end()) {

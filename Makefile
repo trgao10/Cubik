@@ -474,7 +474,8 @@ Cubik.o: Cubik.cpp include/QGLViewer/manipulatedCameraFrame.h \
 		/usr/include/qt5/QtCore/QDateTime \
 		Cubik.h \
 		/usr/include/qt5/QtGui/QMouseEvent \
-		cube.h
+		cube.h \
+		solveCube.cpp
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o Cubik.o Cubik.cpp
 
 cube.o: cube.cpp cube.h \

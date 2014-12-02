@@ -130,10 +130,17 @@ void do_move(string face, string mvs){
     }
 }
 
-vector<string> solveCube(vector<string> currentStatus) {
+vector<string> Cubik::solveCube() {
     //--- Define the goal.
     string goal[] = { "UF", "UR", "UB", "UL", "DF", "DR", "DB", "DL", "FR", "FL", "BR", "BL",
                       "UFR", "URB", "UBL", "ULF", "DRF", "DFL", "DLB", "DBR" };
+    
+    // for (auto iter = currentStatus.begin(); iter != currentStatus.end(); ++iter)
+    //     std::cout << *iter << " ";
+    // std::cout << std::endl;
+    // for (int j = 0; j < 20; j++)
+    //     std::cout << goal[j] << " ";
+    // std::cout << std::endl;
 
     //UF UR UB UL DF DR DB DL FR FL BR BL UFR URB UBL ULF DRF DFL DLB DBR
     //0  1  2  3  4  5  6  7  8  9  10 11 12  13  14  15  16  17  18  19

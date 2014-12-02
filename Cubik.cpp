@@ -1,5 +1,6 @@
 #include <QGLViewer/manipulatedCameraFrame.h>
 #include "Cubik.h"
+#include "solveCube.cpp"
 
 using namespace qglviewer;
 using namespace std;
@@ -15,7 +16,7 @@ void Viewer::initSpotLight() {
 
 void Viewer::init() {
     restoreStateFromFile();
-    
+
     glLineWidth(3.0);
 
     setSceneBoundingBox(Vec( 3.0f, 3.0f, 3.0f), Vec(-3.0f,-3.0f,-3.0f));
@@ -50,6 +51,29 @@ void Viewer::draw() {
     // glVertex3fv(orig);
     // glVertex3fv(orig + 100.0*dir);
     // glEnd();
+}
+
+void Viewer::drawCornerCube() {
+    int viewport[4];
+    int scissor[4];
+
+    // The viewport and the scissor are changed to fit the lower left
+    // corner. Original values are saved.
+    glGetIntegerv(GL_VIEWPORT,viewport);
+    glGetIntegerv(GL_SCISSOR_BOX,scissor);
+
+    glViewport(0,0,width()/4,height()/4);
+    glScissor(0,0,width()/4,height()/4);
+
+    // The Z-buffer is cleared to make the thumbnail appear over the
+    // original image.
+    glClear(GL_DEPTH_BUFFER_BIT);
+
+    cubik.drawCornerCube();
+
+    // The viewport and the scissor are restored.
+    glScissor(scissor[0],scissor[1],scissor[2],scissor[3]);
+    glViewport(viewport[0],viewport[1],viewport[2],viewport[3]);
 }
 
 void Viewer::drawCornerAxis() {
@@ -134,7 +158,8 @@ void Viewer::drawCornerAxis() {
 void Viewer::postDraw() {
     QGLViewer::postDraw();
     if (showCornerAxis)
-        drawCornerAxis();
+        drawCornerCube();
+        // drawCornerAxis();
 }
 
 void Viewer::drawWithNames() {
@@ -219,10 +244,11 @@ void Viewer::postSelection(const QPoint&) {
                 expectedCornerLocations.push_back(sum+ParentCube->getCubeFrame()->position());
             }
         expectedChildLocations.insert(expectedChildLocations.end(), expectedCornerLocations.begin(), expectedCornerLocations.end());
-        
         for (auto iter = expectedChildLocations.begin(); iter != expectedChildLocations.end(); ++iter) {
             // should first get the matrix in world coordinate system, then transform it to the new frame coordinate system
             Cube * ChildCube = cubik.getEdgeCornerCubeAtPosition(*iter);
+            if (ChildCube == NULL)
+                return;
             qglviewer::Vec newTranslation = ParentCube->getCubeFrame()->coordinatesOf(ChildCube->getCubeFrame()->position());
             qglviewer::Quaternion oldOrientation = ChildCube->getCubeFrame()->orientation();
             qglviewer::Quaternion newParentOrientation = ParentCube->getCubeFrame()->orientation();
@@ -252,13 +278,21 @@ void Viewer::keyPressEvent(QKeyEvent *e) {
         QGLViewer::keyPressEvent(e);
 }
 
+void Viewer::mousePressEvent(QMouseEvent * e) {
+    if (cubik.isSpinning())
+        cubik.setResumeSpinning(true);
+    QGLViewer::mousePressEvent(e);
+}
+
 void Viewer::mouseReleaseEvent(QMouseEvent * e) {
     int selected = cubik.getSelectedFrameNumber();
+    if (cubik.checkResumeSpinning())
+        cubik.faceCenterCube(selected)->getCubeFrame()->startSpinning(0.5);
     if ((e->button() == Qt::LeftButton) && (e->modifiers() == Qt::NoButton)) {
         if ((selected >= 0) && (selected < NumFaces)) {
             if (cubik.faceCenterCube(selected)->getCubeFrame()->isSpinning())
                 cubik.faceCenterCube(selected)->getCubeFrame()->stopSpinning();
-            cubik.faceCenterCube(selected)->getCubeFrame()->startSpinning(0.5);
+            cubik.faceCenterCube(selected)->getCubeFrame()->startSpinning(0.6);
         }
     }
     QGLViewer::mouseReleaseEvent(e);
@@ -275,7 +309,8 @@ Cubik::Cubik() {
     faceToIdx['L'] = 4;
     faceToIdx['R'] = 5;
     
-    centerCube = new Cube("UDFBLR");
+    cornerCube = new Cube("UDFBLR");
+    centerCube = new Cube("");
     faceCenterCubes[0] = new Cube("U");
     faceCenterCubes[1] = new Cube("D");
     faceCenterCubes[2] = new Cube("F");
@@ -332,6 +367,7 @@ Cubik::~Cubik() {
     for (int j = 0; j < NumFaces; j++)
         delete faceCenterCubes[j];
     delete centerCube;
+    delete cornerCube;
 }
 
 void Cubik::draw() {
@@ -346,18 +382,20 @@ void Cubik::draw() {
             // check if the faceCenterCube has been aligned to the centerCube
             if (faceCenterCube(j)->getCubeFrame()->checkAlignedWithFrame(centerCube->getCubeFrame())) {
                 faceCenterCube(j)->getCubeFrame()->stopSpinning();
+                setResumeSpinning(false);
                 updateEdgeCornerPosition();
                 // std::cout << nSteps << std::endl;
             }
         }
     }
     
-    if(!isSpinning()) {
-        updateEdgeCornerPosition();
-    }
+    // if(!isSpinning()) {
+    //     updateEdgeCornerPosition();
+    // }
     
     glPushMatrix();
     glMultMatrixd(centerCube->getCubeFrame()->matrix());
+    glScalef( 0.90f, 0.90f, 0.90f);
     centerCube->draw();
     glPopMatrix();
     
@@ -365,6 +403,7 @@ void Cubik::draw() {
         glPushMatrix();
         glMultMatrixd(faceCenterCube(j)->getCubeFrame()->matrix());
         glPushName(j);
+        glScalef( 0.90f, 0.90f, 0.90f);
         faceCenterCube(j)->draw();
         glPopName();
         glPopMatrix();
@@ -375,6 +414,7 @@ void Cubik::draw() {
         glMultMatrixd(edgeCornerCube(j)->parentCube->getCubeFrame()->matrix());
         glMultMatrixd(edgeCornerCube(j)->getCubeFrame()->matrix());
         glPushName(j+NumFaces);
+        glScalef( 0.90f, 0.90f, 0.90f);
         edgeCornerCube(j)->draw();
         glPopName();
         glPopMatrix();
@@ -417,6 +457,13 @@ void Cubik::updateEdgeCornerPosition() {
     }
     if (changedFlag)
         increase_nSteps();
+    solutionToCurrentStatus.erase(solutionToCurrentStatus.begin(), solutionToCurrentStatus.end());
+    // std::cout << "solving cube..." << std::endl;
+    // solutionToCurrentStatus = solveCube();
+    // std::cout << "solved!" << std::endl;
+    // std::cout << solutionToCurrentStatus.size() << std::endl;
+    // for (auto iter = solutionToCurrentStatus.begin(); iter != solutionToCurrentStatus.end(); ++iter)
+    //     std::cout << *iter << std::endl;
 }
 
 Cube * Cubik::getEdgeCornerCubeAtPosition(qglviewer::Vec pos) {

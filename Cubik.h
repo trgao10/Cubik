@@ -11,6 +11,7 @@
 
 class Cubik {
 private:
+    Cube * cornerCube;
     Cube * centerCube;
     Cube * faceCenterCubes[NumFaces];
     Cube * edgeCornerCubes[NumEdges+NumCorners];
@@ -42,15 +43,20 @@ private:
                                                         qglviewer::Vec( 2.0f,-2.0f,-2.0f), // DBR
     };
     std::vector<std::string> currentStatus;
+    std::vector<std::string> solutionToCurrentStatus;
     int nSteps;
     int selected;
+    bool resumeSpinning;
     qglviewer::Vec faceNormals[NumFaces]; // U, D, F, B, L, R
     std::map<Cube *, qglviewer::Vec> edgeCornerPosition;
 public:
     Cubik();
     ~Cubik();
     void draw();
+    void drawCornerCube() { cornerCube->draw(); }
 
+    bool checkResumeSpinning() { return resumeSpinning; }
+    void setResumeSpinning(bool ifResume) { resumeSpinning = ifResume; }
     bool isSpinning();
     Cube * getCenterCube() {
         return centerCube;
@@ -83,6 +89,7 @@ public:
     qglviewer::Vec relativePositionByPosition(Cube * ChildCube, Cube * ParentCube) {
         return (ChildCube->getCubeFrame()->position() - ParentCube->getCubeFrame()->position());
     }
+    std::vector<std::string> solveCube();
 };
 
 class Viewer : public QGLViewer {
@@ -97,7 +104,8 @@ protected :
     virtual void endSelection(const QPoint&);
     virtual void postSelection(const QPoint& point);
     
-    virtual void keyPressEvent(QKeyEvent *e);
+    virtual void keyPressEvent(QKeyEvent * e);
+    virtual void mousePressEvent(QMouseEvent * e);
     virtual void mouseReleaseEvent(QMouseEvent * e);
 
 private:
@@ -106,6 +114,7 @@ private:
   bool showCornerAxis;
   
   void drawCornerAxis();
+  void drawCornerCube();
 };
 
 #endif

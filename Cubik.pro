@@ -2,7 +2,7 @@ TEMPLATE = app
 TARGET   = Cubik
 
 HEADERS  = Cubik.h cube.h
-SOURCES  = Cubik.cpp cube.cpp main.cpp
+SOURCES  = Cubik.cpp solveCube.cpp cube.cpp main.cpp
 
 QT *= xml opengl widgets gui
 

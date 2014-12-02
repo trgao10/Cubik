@@ -29,13 +29,11 @@ Cubik: a visualization project for Rubik's Cube
 sudo apt-get install mesa-common-dev
 sudo apt-get install libglu1-mesa-dev -y
 ```
-+ **QGLViewer**: Cubik replies heavily on the library [QGLViewer](http://www.libqglviewer.com/), which is a C++ library based on Qt that eases the creation of OpenGL 3D viewers. We have already included the header files and compiled libraries (under Ubuntu 14.04 LTS) to Cubik; in case the compilation still doesn't run through, simply apt-get this library by
-```
-sudo apt-get install libqglviewer-dev
-sudo apt-get install libqglviewer2
-```
++ **QGLViewer**: Cubik replies heavily on the library [QGLViewer](http://www.libqglviewer.com/), which is a C++ library based on Qt that eases the creation of OpenGL 3D viewers. We have already included the header files and compiled libraries (under Ubuntu 14.04 LTS) to Cubik. As long as you have Qt and GLU installed, you should be fine.
 
 #### Compilation
+This compilation procedure has been tested on multiple independent machines running Ubuntu 14.04 LTS (Trusty Tahr).
+
 Follow these steps to copy this repository to your local directory and build:
 ```
 git clone https://github.com/trgao10/Cubik

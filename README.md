@@ -34,11 +34,11 @@ sudo apt-get install libqglviewer2
 ```
 
 ## Notation and Algorithm for Solving Rubik's Cube
-The solution integrated into this version of Cubik is based on [Mark Jeay's algorithm](http://www.jeays.net/rubiks.htm).
+The solution integrated into this version of Cubik is based on [Mark Jeay's algorithm](http://www.jeays.net/rubiks.htm). This algorithm is a classic one for beginner-level users since it is solved ituitively layer by layer. However, it is definetely not a fast algorithm which involves more steps than some other solutions.
 
-The notation is adapted from a earlier [Rubik's Cube Contest](http://tomas.rokicki.com/cubecontest/). The 6 faces of the cube are denoted as U (top), D(bottom), F(front), B(back), L(left), and R(right), respectively. Each solution step provided in the hint mode indicates one of the following three operations on the corresponding face:
+The notation is adapted from an earlier [Rubik's Cube Contest](http://tomas.rokicki.com/cubecontest/). The 6 faces of the cube are denoted as U (top), D(bottom), F(front), B(back), L(left), and R(right), respectively. Each solution step provided in the hint mode indicates one of the following three operations on the corresponding face:
 
-1. 90-degree turn clockwise: U, D, F, B, L, R.
+1. 90-degree turn clockwise: U, D, F, B, L, R;
 
 2. 180-degree turn clockwise: U2, D2, F2, B2, L2, R2;
 
@@ -46,16 +46,20 @@ The notation is adapted from a earlier [Rubik's Cube Contest](http://tomas.rokic
 
 Note that clockwise and counter-clockwise turns are viewed with respect to the center of the cube.
 
-The solution algorithm consists of 6 phases in general:
+The solution algorithm consists of 7 phases in general:
 
-1. Up layer edge pieces solved
- 
-2. Up layer corner pieces solved
+1. solve *up layer edge pieces*;
 
-3. Middle layer solved
+2. solve *up layer corner pieces*;
 
-4. Down layer edge pieces solved
+3. solve *middle layer*;
 
-5. Down layer corner pieces solved
+4. put *down layer edge pieces* in correct positions;
+
+5. put *down layer edge pieces* in correct directions;
+
+6. put *down layer corner pieces* in correct positions;
+
+7. put *down layer corner pieces* in correct directions.
 
 The hint mode specifies which phase of the algorithm the user is currently at.

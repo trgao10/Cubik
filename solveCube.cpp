@@ -152,7 +152,13 @@ vector<string> solveCube(vector<string> currentStatus) {
         }
     }
 
-
+    //if input is solved cube, return empty vector
+    bool solved_input = true;
+    for (int i=0; i<40; i++){
+        if (currentState[i]!=goalState[i]) {solved_input = false;}
+    }
+    final_result.clear();
+    if(solved_input == true){return final_result;}
 
     //step 1.0: first layer edge piece
     //look for "UF"(0),"UR"(1),"UL"(2),"UB"(3), return there index and directions

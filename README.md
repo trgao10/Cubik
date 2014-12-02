@@ -21,6 +21,8 @@ Cubik: a visualization project for Rubik's Cube
 + press H to toggle hint mode (next move and number of moves left shown on top left)
 
 ## Dependency and Compilation
+
+#### Dependency
 + **Qt 5**: Cubik is built upon the Qt framework. You need at least Qt 5.2.1 to compile it. If your default Ubuntu repository does not contain Qt5, check out this [link](http://askubuntu.com/questions/279421/how-can-i-install-qt-5-x-on-12-04-lts).
 + **GLU**: Starting from Qt 4.8, the GLU dependecy has been removed from standard Qt versions. Since the library we use still depends on GLU and GL, you may have to install these OpenGL pacakges if they are not already installed. Generally this can be down by (the second apt-get is necessary only if "-lGL is missing" after attempting to compile Cubik after executing the first apt-get; see [source link](http://qt-project.org/forums/viewthread/23855/#110514))
 ```
@@ -31,6 +33,14 @@ sudo apt-get install libglu1-mesa-dev -y
 ```
 sudo apt-get install libqglviewer-dev
 sudo apt-get install libqglviewer2
+```
+
+#### Compilation
+```
+git clone https://github.com/trgao10/Cubik
+cd Cubik/
+qmake
+make
 ```
 
 ## Notation and Algorithm for Solving Rubik's Cube

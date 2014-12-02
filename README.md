@@ -31,7 +31,7 @@ Cubik
 sudo apt-get install mesa-common-dev
 sudo apt-get install libglu1-mesa-dev -y
 ```
-+ **QGLViewer**: Cubik replies heavily on the library [QGLViewer](http://www.libqglviewer.com/), which is a C++ library based on Qt that eases the creation of OpenGL 3D viewers. We have already included the header files and compiled libraries (under Ubuntu 14.04 LTS) to Cubik. As long as you have Qt and GLU installed, you should be fine.
++ **libQGLViewer**: Cubik replies heavily on the library [libQGLViewer](http://www.libqglviewer.com/), which is a C++ library based on Qt that eases the creation of OpenGL 3D viewers. We have already included the header files and compiled libraries (under Ubuntu 14.04 LTS) to Cubik. As long as you have Qt and GLU installed, you should be fine.
 
 #### Compilation
 This compilation procedure has been tested on multiple independent machines running Ubuntu 14.04 LTS (Trusty Tahr).
@@ -87,7 +87,7 @@ The hint mode specifies which phase of the algorithm the user is currently at.
 ## GNU GPL License
 This code is released under the terms of the GNU-GPL license Version 3. Any software you create that uses any part of this source code (or its compiled version) will have to be open sourced under the same conditions.
 
-If you would like to use the QGLViewer library in your applications, you should consult its [license page](http://www.libqglviewer.com/download.html).
+If you would like to use the libQGLViewer library in your applications, you should consult its [license page](http://www.libqglviewer.com/download.html).
 
 ## Contributors
 

@@ -1,10 +1,9 @@
 Cubik
 =====
 
-Cubik: a visualization project for Rubik's Cube
+[*Cubik*](https://github.com/trgao10/Cubik): a visualization project for Rubik's Cube
 
 ![Cubik Screenshot](/images/Cubik.png)
-
 
 ## Basic Operations
 

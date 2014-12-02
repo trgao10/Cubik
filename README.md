@@ -57,7 +57,7 @@ That's all. Happy Cubik-ing!
 
 The solution integrated into this version of Cubik is based on [Mark Jeay's algorithm](http://www.jeays.net/rubiks.htm). This algorithm is classic for beginner-level users since it is solved ituitively layer by layer. However, it is definetely not a fast algorithm which involves more steps than some other solutions.
 
-The notation is adapted from an earlier [Rubik's Cube Contest](http://tomas.rokicki.com/cubecontest/). The 6 faces of the cube are denoted as U (top), D(bottom), F(front), B(back), L(left), and R(right), respectively. Each solution step provided in the hint mode indicates one of the following three operations on the corresponding face:
+The notation is adapted from an earlier [Rubik's Cube Contest](http://tomas.rokicki.com/cubecontest/). The 6 faces of the cube are denoted as U (top/yellow), D(bottom/white), F(front/blue), B(back/green), L(left/orange), and R(right/red), respectively. Each solution step provided in the hint mode indicates one of the following three operations on the corresponding face:
 
 1. 90-degree turn clockwise: U, D, F, B, L, R;
 

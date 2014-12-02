@@ -16,3 +16,6 @@ Cubik: a visualization project for Rubik's Cube
 + double click on a face to activate it, then rotate
 + double click at any point not on the cube to deactivate face selection and back to view mode
 + when a face is activated, Ctrl+(left|right|wheel) mouse buttons enables temporary view mode without exiting the interactive mode
+
+#### Hint Mode: guide to a solution
++ press H to toggle hint mode (next move and number of moves left shown on top left)

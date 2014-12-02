@@ -18,7 +18,7 @@ CXXFLAGS      = -m64 -pipe -O2 -std=c++0x -D_REENTRANT -Wall -W -fPIE $(DEFINES)
 INCPATH       = -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I. -Iinclude -I/usr/include/qt5 -I/usr/include/qt5/QtOpenGL -I/usr/include/qt5/QtWidgets -I/usr/include/qt5/QtXml -I/usr/include/qt5/QtGui -I/usr/include/qt5/QtCore -I.
 LINK          = g++
 LFLAGS        = -m64 -Wl,-O1
-LIBS          = $(SUBLIBS) -L/usr/X11R6/lib64 -L./lib/QGLViewer/ -lQGLViewer -lGL -lGLU -lQt5OpenGL -L/usr/lib/x86_64-linux-gnu -lQt5Widgets -lQt5Xml -lQt5Gui -lQt5Core -lpthread 
+LIBS          = $(SUBLIBS) -L/usr/X11R6/lib64 -L./lib -lQGLViewer -lGL -lGLU -lQt5OpenGL -L/usr/lib/x86_64-linux-gnu -lQt5Widgets -lQt5Xml -lQt5Gui -lQt5Core -lpthread 
 AR            = ar cqs
 RANLIB        = 
 QMAKE         = /usr/lib/x86_64-linux-gnu/qt5/bin/qmake

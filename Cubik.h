@@ -58,6 +58,15 @@ public:
     bool checkResumeSpinning() { return resumeSpinning; }
     void setResumeSpinning(bool ifResume) { resumeSpinning = ifResume; }
     bool isSpinning();
+    std::string getNextMove() {
+        if (getNumRemainingMoves() > 0)
+            return *solutionToCurrentStatus.begin();
+        else
+            return "";
+    }
+    int getNumRemainingMoves() {
+        return solutionToCurrentStatus.size();
+    }
     Cube * getIndicatorCube () {
         return indicatorCube;
     }
@@ -115,9 +124,11 @@ private:
   Cubik cubik;
   qglviewer::Vec orig, dir, selectedPoint;
   bool showIndicatorAxis;
+  bool hintMode;
   
   void drawIndicatorAxis();
   void drawIndicatorCube();
+  void drawHint();
 };
 
 #endif

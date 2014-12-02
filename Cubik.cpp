@@ -41,6 +41,7 @@ void Viewer::init() {
 
     initSpotLight();
     showIndicatorAxis = true;
+    hintMode = false;
 }
 
 void Viewer::draw() {
@@ -75,6 +76,7 @@ void Viewer::drawIndicatorCube() {
     qreal threshold = -0.2;
     glDisable(GL_LIGHTING);
     glDisable(GL_DEPTH_TEST);
+    qglColor(QColor(255, 239, 191));
     if (-camera()->viewDirection()*Vec( 0.0f, 1.0f, 0.0f) > threshold)
         renderText( 0.0f, 2.0f, 0.0f, "U");
     if (-camera()->viewDirection()*Vec( 0.0f,-1.0f, 0.0f) > threshold)
@@ -87,12 +89,18 @@ void Viewer::drawIndicatorCube() {
         renderText(-2.0f, 0.0f, 0.0f, "L");
     if (-camera()->viewDirection()*Vec( 1.0f, 0.0f, 0.0f) > threshold)
         renderText( 2.0f, 0.0f, 0.0f, "R");
+    qglColor(QColor( 255, 255, 255));
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_LIGHTING);
 
     // The viewport and the scissor are restored.
     glScissor(scissor[0],scissor[1],scissor[2],scissor[3]);
     glViewport(viewport[0],viewport[1],viewport[2],viewport[3]);
+}
+
+void Viewer::drawHint() {
+    drawText(10, 20, QString::fromStdString("Next Move: " + cubik.getNextMove()));
+    drawText(10, 40, QString("%1 Steps Left").arg(cubik.getNumRemainingMoves()));
 }
 
 void Viewer::drawIndicatorAxis() {
@@ -179,6 +187,8 @@ void Viewer::postDraw() {
     if (showIndicatorAxis)
         drawIndicatorCube();
         // drawIndicatorAxis();
+    if (hintMode)
+        drawHint();
 }
 
 void Viewer::drawWithNames() {
@@ -289,6 +299,13 @@ void Viewer::keyPressEvent(QKeyEvent *e) {
             showIndicatorAxis = false;
         else if (!showIndicatorAxis)
             showIndicatorAxis = true;
+        handled = true;
+        updateGL();
+    } else if ((e->key()==Qt::Key_H) && (modifiers==Qt::NoButton)) {
+        if (hintMode)
+            hintMode = false;
+        else if (!hintMode)
+            hintMode = true;
         handled = true;
         updateGL();
     }
@@ -477,12 +494,9 @@ void Cubik::updateEdgeCornerPosition() {
     if (changedFlag)
         increase_nSteps();
     solutionToCurrentStatus.erase(solutionToCurrentStatus.begin(), solutionToCurrentStatus.end());
-    // std::cout << "solving cube..." << std::endl;
-    // solutionToCurrentStatus = solveCube();
+    // std::cout << "solving cubes..." << std::endl;
+    solutionToCurrentStatus = solveCube();
     // std::cout << "solved!" << std::endl;
-    // std::cout << solutionToCurrentStatus.size() << std::endl;
-    // for (auto iter = solutionToCurrentStatus.begin(); iter != solutionToCurrentStatus.end(); ++iter)
-    //     std::cout << *iter << std::endl;
 }
 
 Cube * Cubik::getEdgeCornerCubeAtPosition(qglviewer::Vec pos) {

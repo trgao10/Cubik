@@ -135,9 +135,9 @@ vector<string> Cubik::solveCube() {
     string goal[] = { "UF", "UR", "UB", "UL", "DF", "DR", "DB", "DL", "FR", "FL", "BR", "BL",
                       "UFR", "URB", "UBL", "ULF", "DRF", "DFL", "DLB", "DBR" };
     
-    // for (auto iter = currentStatus.begin(); iter != currentStatus.end(); ++iter)
-    //     std::cout << *iter << " ";
-    // std::cout << std::endl;
+    for (auto iter = currentStatus.begin(); iter != currentStatus.end(); ++iter)
+        std::cout << *iter << " ";
+    std::cout << std::endl;
     // for (int j = 0; j < 20; j++)
     //     std::cout << goal[j] << " ";
     // std::cout << std::endl;

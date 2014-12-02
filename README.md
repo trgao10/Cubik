@@ -30,7 +30,7 @@ sudo apt-get install libglu1-mesa-dev -y
 + **QGLViewer**: Cubik replies heavily on the library [QGLViewer](http://www.libqglviewer.com/), which is a C++ library based on Qt that eases the creation of OpenGL 3D viewers. We have already included the header files and compiled libraries (under Ubuntu 14.04 LTS) to Cubik; in case the compilation still doesn't run through, simply apt-get this library by
 ```
 sudo apt-get install libqglviewer-dev
-libqglviewer2
+sudo apt-get install libqglviewer2
 ```
 
 ## Notation and Algorithm for Solving Rubik's Cube

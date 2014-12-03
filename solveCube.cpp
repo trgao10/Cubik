@@ -9,7 +9,9 @@
 using namespace std;
 
 typedef vector<int> vi;
-vector<string> final_result;
+vector< vector <string> > final_result;
+vector <string> current_result;
+
 
 vi currentState( 40 ), goalState( 40 );
 
@@ -107,30 +109,30 @@ void do_move(string face, string mvs){
         s.push_back(*(p+1));
 
 
-        if     (s=="U1"){currentState = appMove(0, currentState); final_result.push_back("U");}
-        else if(s=="U2"){currentState = appMove(1, currentState); final_result.push_back("U2");}
-        else if(s=="U3"){currentState = appMove(2, currentState); final_result.push_back("U'");}
-        else if(s=="D1"){currentState = appMove(3, currentState); final_result.push_back("D");}
-        else if(s=="D2"){currentState = appMove(4, currentState); final_result.push_back("D2");}
-        else if(s=="D3"){currentState = appMove(5, currentState); final_result.push_back("D'");}
-        else if(s=="F1"){currentState = appMove(6, currentState); final_result.push_back("F");}
-        else if(s=="F2"){currentState = appMove(7, currentState); final_result.push_back("F2");}
-        else if(s=="F3"){currentState = appMove(8, currentState); final_result.push_back("F'");}
-        else if(s=="B1"){currentState = appMove(9, currentState); final_result.push_back("B");}
-        else if(s=="B2"){currentState = appMove(10, currentState); final_result.push_back("B2");}
-        else if(s=="B3"){currentState = appMove(11, currentState); final_result.push_back("B'");}
-        else if(s=="L1"){currentState = appMove(12, currentState); final_result.push_back("L");}
-        else if(s=="L2"){currentState = appMove(13, currentState); final_result.push_back("L2");}
-        else if(s=="L3"){currentState = appMove(14, currentState); final_result.push_back("L'");}
-        else if(s=="R1"){currentState = appMove(15, currentState); final_result.push_back("R");}
-        else if(s=="R2"){currentState = appMove(16, currentState); final_result.push_back("R2");}
-        else if(s=="R3"){currentState = appMove(17, currentState); final_result.push_back("R'");}
+        if     (s=="U1"){currentState = appMove(0, currentState); current_result.push_back("U");}
+        else if(s=="U2"){currentState = appMove(1, currentState); current_result.push_back("U2");}
+        else if(s=="U3"){currentState = appMove(2, currentState); current_result.push_back("U'");}
+        else if(s=="D1"){currentState = appMove(3, currentState); current_result.push_back("D");}
+        else if(s=="D2"){currentState = appMove(4, currentState); current_result.push_back("D2");}
+        else if(s=="D3"){currentState = appMove(5, currentState); current_result.push_back("D'");}
+        else if(s=="F1"){currentState = appMove(6, currentState); current_result.push_back("F");}
+        else if(s=="F2"){currentState = appMove(7, currentState); current_result.push_back("F2");}
+        else if(s=="F3"){currentState = appMove(8, currentState); current_result.push_back("F'");}
+        else if(s=="B1"){currentState = appMove(9, currentState); current_result.push_back("B");}
+        else if(s=="B2"){currentState = appMove(10, currentState); current_result.push_back("B2");}
+        else if(s=="B3"){currentState = appMove(11, currentState); current_result.push_back("B'");}
+        else if(s=="L1"){currentState = appMove(12, currentState); current_result.push_back("L");}
+        else if(s=="L2"){currentState = appMove(13, currentState); current_result.push_back("L2");}
+        else if(s=="L3"){currentState = appMove(14, currentState); current_result.push_back("L'");}
+        else if(s=="R1"){currentState = appMove(15, currentState); current_result.push_back("R");}
+        else if(s=="R2"){currentState = appMove(16, currentState); current_result.push_back("R2");}
+        else if(s=="R3"){currentState = appMove(17, currentState); current_result.push_back("R'");}
 
         s.clear();
     }
 }
 
-vector<string> Cubik::solveCube() {
+vector < vector <string> > Cubik::solveCube() {
     //--- Define the goal.
     string goal[] = { "UF", "UR", "UB", "UL", "DF", "DR", "DB", "DL", "FR", "FL", "BR", "BL",
                       "UFR", "URB", "UBL", "ULF", "DRF", "DFL", "DLB", "DBR" };
@@ -159,13 +161,18 @@ vector<string> Cubik::solveCube() {
         }
     }
 
+    current_result.clear();
+
     //if input is solved cube, return empty vector
     bool solved_input = true;
     for (int i=0; i<40; i++){
         if (currentState[i]!=goalState[i]) {solved_input = false;}
     }
     final_result.clear();
-    if(solved_input == true){return final_result;}
+    if(solved_input == true){
+        for (unsigned i =0; i<7; i++){final_result.push_back(current_result);}
+        return final_result;
+    }
 
     //step 1.0: first layer edge piece
     //look for "UF"(0),"UR"(1),"UL"(2),"UB"(3), return there index and directions
@@ -192,7 +199,7 @@ vector<string> Cubik::solveCube() {
                 while(i==0){
                     if (currentState[0]==0){break;}
                     currentState = appMove(0, currentState);
-                    final_result.push_back("U");
+                    current_result.push_back("U");
                 }
             }
 
@@ -207,7 +214,7 @@ vector<string> Cubik::solveCube() {
                     while(1){
                         if (currentState[i]==i){break;}
                         currentState = appMove(0, currentState);
-                        final_result.push_back("U");
+                        current_result.push_back("U");
                     }
                 }
             }
@@ -232,7 +239,7 @@ vector<string> Cubik::solveCube() {
             while(1){
                 if (currentState[i+4]==i){break;}
                 currentState = appMove(3, currentState);
-                final_result.push_back("D");
+                current_result.push_back("D");
             }
 
             if(dir==0){
@@ -269,6 +276,10 @@ vector<string> Cubik::solveCube() {
         }
 
     }
+
+
+    final_result.push_back(current_result);
+    current_result.clear();
 
     //check first cross
     /*if (currentState[0]==0 && currentState[1]==1 && currentState[2]==2 && currentState[3]==3 && currentState[20]==0 && currentState[21]==0 && currentState[22]==0 && currentState[23]==0){
@@ -320,7 +331,7 @@ vector<string> Cubik::solveCube() {
                 else if (i==14 && currentState[18]==14){break;}
                 else if (i==15 && currentState[17]==15){break;}
                 currentState = appMove(3, currentState);
-                final_result.push_back("D");
+                current_result.push_back("D");
             }
 
             index = checkindex(i);
@@ -383,6 +394,10 @@ vector<string> Cubik::solveCube() {
 
     }
 
+    final_result.push_back(current_result);
+    current_result.clear();
+
+
     //check first layer corner
     /* if (currentState[12]==12 && currentState[13]==13 && currentState[14]==14 && currentState[15]==15 && currentState[32]==0 && currentState[33]==0 && currentState[34]==0 && currentState[35]==0){
         printf("First layer corners fixed!\n");
@@ -409,7 +424,7 @@ vector<string> Cubik::solveCube() {
                         else if(index==10&& currentState[7]==cs){face = "right";do_move(face, "F1D1F3D3R3D3R1");break;}
                         else if(index==11&& currentState[4]==cs){face = "back";do_move(face, "F1D1F3D3R3D3R1");break;}
                         currentState = appMove(3, currentState);
-                        final_result.push_back("D");
+                        current_result.push_back("D");
                     }
                     break;
                 }
@@ -433,10 +448,13 @@ vector<string> Cubik::solveCube() {
                 else if(i==11 && dir==0 && currentState[4]==11){face = "back";do_move(face, "F1D1F3D3R3D3R1");break;}
                 else if(i==11 && dir==1 && currentState[5]==11){face = "left";do_move(face, "F3D3F1D1L1D1L3"); break;}
                 currentState = appMove(3, currentState);
-                final_result.push_back("D");
+                current_result.push_back("D");
             }
         }
     }
+
+    final_result.push_back(current_result);
+    current_result.clear();
 
     //check second layer
     /*if (currentState[8]==8 && currentState[9]==9 && currentState[10]==10 && currentState[11]==11 && currentState[28]==0 && currentState[29]==0 && currentState[30]==0 && currentState[31]==0){
@@ -476,6 +494,10 @@ vector<string> Cubik::solveCube() {
     }
     else if(last_cross.size()==0){do_move("down", "B1L1U1L3U3B3F1U1R1U3R3F3");}
 
+    final_result.push_back(current_result);
+    current_result.clear();
+
+
     //check third layer cross direction
     /*if (currentState[24]==0 && currentState[25]==0 && currentState[26]==0 && currentState[27]==0){
         printf("Third layer cross direction fixed!\n");
@@ -502,21 +524,21 @@ vector<string> Cubik::solveCube() {
 
     for (int p = 0; p<turn; p++){
         currentState = appMove(3, currentState);
-        final_result.push_back("D");
+        current_result.push_back("D");
     }
 
     if (matcub ==2){
         //opposite
         if((vec[turn][0]==1 && vec[turn][2]==1) || (vec[turn][1]==1 && vec[turn][3]==1)){
             currentState = appMove(3, currentState);
-            final_result.push_back("D");
+            current_result.push_back("D");
             matcub = 0;
             turn++;
         }
         //adjacent
         else {
             currentState = appMove(3, currentState);
-            final_result.push_back("D");
+            current_result.push_back("D");
             matcub = 1;
             //prepare for matcub = 1
             if (turn<3){turn++;}
@@ -557,7 +579,7 @@ vector<string> Cubik::solveCube() {
         while(1){
             if (currentState[6]==5) {break;}
             currentState = appMove(3, currentState);
-            final_result.push_back("D");
+            current_result.push_back("D");
         }
         do_move("down","R2D2B2D1L2F2L2F2L2F2D3B2D2R2" );
     }
@@ -570,6 +592,8 @@ vector<string> Cubik::solveCube() {
 
     cout<< final_result << "\n";*/
 
+    final_result.push_back(current_result);
+    current_result.clear();
 
     //step 5: position U face corner pieces
     vi thirdcornerindex;
@@ -608,6 +632,10 @@ vector<string> Cubik::solveCube() {
             {do_move("downleft","B1L1U1L3U3L1U1L3U3L1U1L3U3B3");}
         }
     }
+
+    final_result.push_back(current_result);
+    current_result.clear();
+
 
     //check third layer corner face
     /* if (currentState[16]==16 && currentState[17]==17 && currentState[18]==18 && currentState[19]==19 && currentState[24]==0){
@@ -732,6 +760,9 @@ vector<string> Cubik::solveCube() {
         do_move("downright","U3");
     }
 
+    final_result.push_back(current_result);
+    current_result.clear();
+
     //check entire cube
     /* bool flag = true;
     for (int i =0; i<20; i++){
@@ -746,16 +777,19 @@ vector<string> Cubik::solveCube() {
 }
 
 //test with main function
-/*int main(int argc, char**argv){
+int main(int argc, char**argv){
     vector<string> current;
-    vector<string> result;
+    vector <vector<string> > result;
     for (int i=0; i<20; i++){
-      current.push_back(argv[i+1]);
+        current.push_back(argv[i+1]);
     }
     result = solveCube(current);
     for (unsigned i=0; i<result.size(); i++){
-      cout << result[i] << " ";
+        for (unsigned j=0; j<result.size(); j++){
+            cout << result[i][j];
+        }
+        cout << "\n";
     }
     cout <<endl;
     return 0;
-}*/
+}

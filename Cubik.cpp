@@ -559,3 +559,115 @@ void Cubik::solveCubeStoreSolution() {
     currPhase = locateCurrPhase();    
     setCurrPhaseStartStep(getNumSteps());
 }
+
+int Cubik::getPhaseLength() {
+    if (currPhase == 7)
+        return 0;
+    else if ((currPhase >= 0) && (currPhase < 7))
+        return ((int) solutionToCurrentStatus[currPhase].size());
+    else
+        return -1;
+}
+
+int Cubik::getPhaseLength(std::vector<std::vector<std::string> > tmpSoln, int tmpPhase) {
+    if (tmpPhase == 7)
+        return 0;
+    else if ((tmpPhase >= 0) && (tmpPhase < 7))
+        return ((int) tmpSoln[currPhase].size());
+    else
+        return -1;
+}
+
+bool Cubik::checkSolved() {
+    for (auto iter = currentStatus.begin(), jter = solvedCube.begin();
+         iter != currentStatus.end(), jter != solvedCube.end();
+         ++iter, ++jter) {
+        if ((*iter) != (*jter))
+            return false;
+    }
+    return true;
+}
+
+qglviewer::Vec Cubik::relativePositionByPosition(Cube * ChildCube, Cube * ParentCube) {
+    return (ChildCube->getCubeFrame()->position() - ParentCube->getCubeFrame()->position());
+}
+
+int Cubik::locateCurrPhase() {
+    int userPhase = 0;
+    for (auto iter = solutionToCurrentStatus.begin(); iter != solutionToCurrentStatus.end(); ++iter) {
+        if (!(*iter).empty())
+            break;
+        userPhase++;
+    }
+    return userPhase;
+}
+
+int Cubik::locatePhase(std::vector<std::vector<std::string> > tmpSoln) {
+    int userPhase = 0;
+    for (auto iter = tmpSoln.begin(); iter != tmpSoln.end(); ++iter) {
+        if (!(*iter).empty())
+            break;
+        userPhase++;
+    }
+    return userPhase;
+}
+
+std::vector<std::string> Cubik::localSimplify(std::vector<std::string> original) {
+    std::vector<std::string> simpResult;
+    for (auto iter = original.begin(); iter != original.end(); ++iter) {
+        if (((*iter).size() == 2) && ((*iter)[1] == '2')) {
+            simpResult.push_back((*iter).substr(0,1));
+            simpResult.push_back((*iter).substr(0,1));
+        } else
+            simpResult.push_back(*iter);
+    }
+    original = simpResult;
+
+    for (auto iter = original.begin(); iter != original.end(); ++iter) {
+        if (iter+1 >= original.end())
+            break;
+        if (((*iter).size() != (*(iter+1)).size()) && ((*iter)[0] == (*(iter+1))[0])) {
+            iter = original.erase(iter, iter+2);
+        }
+    }
+    for (auto iter = original.begin(); iter != original.end(); ++iter) {
+        if ((original.end() - iter) < 4)
+            break;
+        if (((*iter) == (*(iter+1))) && ((*iter) == (*(iter+2))) && ((*iter) == (*(iter+3))))
+            original.erase(iter, iter+4);
+    }
+    return original;
+}
+
+bool Cubik::vecStringEqual(std::vector<std::string> original, std::vector<std::string> simplified) {
+    for (auto iter = original.begin(), jter = simplified.begin();
+         iter != original.end(), jter != simplified.end();
+         ++iter, ++jter) {
+        if ((*iter) != (*jter))
+            return false;
+    }
+    return true;
+}
+
+std::vector<std::string> Cubik::iterSimplify(std::vector<std::string> original) {
+    /* std::cout << "before iterSimplify: "; */
+    /* for (auto iter = original.begin(); iter != original.end(); ++iter) */
+    /*     std::cout << *iter << " "; */
+    /* std::cout << std::endl; */
+        
+    while (!vecStringEqual(original, localSimplify(original)))
+        original = localSimplify(original);
+        
+    /* std::cout << "after iterSimplify: "; */
+    /* for (auto iter = original.begin(); iter != original.end(); ++iter) */
+    /*     std::cout << *iter << " "; */
+    /* std::cout << std::endl; */
+    return original;
+}
+
+std::vector<std::vector<std::string> > Cubik::iterSimplify(std::vector<std::vector<std::string> > result) {
+    for (std::vector<std::vector<std::string> >::iterator iter = result.begin(); iter != result.end(); ++iter) {
+        *iter = iterSimplify(*iter);
+    }
+    return result;
+}

@@ -239,7 +239,7 @@ void Viewer::endSelection(const QPoint& point) {
 }
 
 void Viewer::postSelection(const QPoint&) {
-    if (manipulatedFrame()->isSpinning())
+    if ((manipulatedFrame()->isSpinning()) || cubik.checkResumeSpinning())
         return;
     
     cubik.updateEdgeCornerPosition();
@@ -432,10 +432,6 @@ void Cubik::draw() {
         }
     }
     
-    // if(!isSpinning()) {
-    //     updateEdgeCornerPosition();
-    // }
-    
     glPushMatrix();
     glMultMatrixd(centerCube->getCubeFrame()->matrix());
     glScalef( 0.90f, 0.90f, 0.90f);
@@ -482,6 +478,21 @@ bool Cubik::isSpinning() {
     return false;
 }
 
+std::string Cubik::getOrientation(Cube * cube, std::string solvedStatus) {
+    std::string result;
+    for (auto iter = solvedStatus.begin(); iter != solvedStatus.end(); ++iter) {
+        // qglviewer::Vec currNormal = faceNormal(faceToIdx[*iter]);
+        qglviewer::Vec currNormalInFrame = cube->getCubeFrame()->transformOf(faceNormal(faceToIdx[*iter]));
+        for (auto jter = cube->getCubeType().begin(); jter != cube->getCubeType().end(); ++jter) {
+            if ((faceNormal(faceToIdx[*jter])-currNormalInFrame).norm() < 1e-3) {
+                result.push_back(*jter);
+                break;
+            }
+        }
+    }
+    return result;
+}
+
 void Cubik::updateEdgeCornerPosition() {
     for (int j = 0; j < NumEdges+NumCorners; j++) {
         edgeCornerPosition[edgeCornerCube(j)] = edgeCornerCube(j)->getCubeFrame()->position();
@@ -491,10 +502,10 @@ void Cubik::updateEdgeCornerPosition() {
     for (int j = 0; j < NumEdges+NumCorners; j++) {
         for (std::vector<qglviewer::Vec>::size_type k = 0; k < currentStatus.size(); k++) {
             if ((solvedCubeLocations[k]-edgeCornerPosition[edgeCornerCube(j)]).norm() < 1e-3) {
-                if ((currentStatus[k] != "") && (currentStatus[k] != edgeCornerCube(j)->getCubeType())) {
+                if ((currentStatus[k] != "") && (currentStatus[k] != getOrientation(edgeCornerCube(j), solvedCube[k]))) {
                     changedFlag = true;
                 }
-                currentStatus[k] = edgeCornerCube(j)->getCubeType();
+                currentStatus[k] = getOrientation(edgeCornerCube(j), solvedCube[k]);
             }
         }
     }
@@ -512,6 +523,10 @@ Cube * Cubik::getEdgeCornerCubeAtPosition(qglviewer::Vec pos) {
 }
 
 void Cubik::solveCubeStoreSolution() {
+    // std::cout << "currentStatus: ";
+    // for (auto iter = currentStatus.begin(); iter != currentStatus.end(); ++iter)
+    //     std::cout << *iter << " ";
+    // std::cout << std::endl;
     solutionToCurrentStatus.erase(solutionToCurrentStatus.begin(), solutionToCurrentStatus.end());
     solutionToCurrentStatus = solveCube();
 }

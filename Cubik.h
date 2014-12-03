@@ -58,15 +58,8 @@ public:
     bool checkResumeSpinning() { return resumeSpinning; }
     void setResumeSpinning(bool ifResume) { resumeSpinning = ifResume; }
     bool isSpinning();
-    /* std::string getNextMove() { */
-    /*     if (getNumRemainingMoves() > 0) */
-    /*         return *solutionToCurrentStatus.begin(); */
-    /*     else */
-    /*         return ""; */
-    /* } */
-    /* int getNumRemainingMoves() { */
-    /*     return solutionToCurrentStatus.size(); */
-    /* } */
+
+    std::string getOrientation(Cube * cube, std::string solvedStatus);
     Cube * getIndicatorCube () {
         return indicatorCube;
     }

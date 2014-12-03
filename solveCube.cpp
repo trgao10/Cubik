@@ -777,7 +777,7 @@ vector < vector <string> > Cubik::solveCube() {
 }
 
 //test with main function
-int main(int argc, char**argv){
+/*int main(int argc, char**argv){
     vector<string> current;
     vector <vector<string> > result;
     for (int i=0; i<20; i++){
@@ -792,4 +792,4 @@ int main(int argc, char**argv){
     }
     cout <<endl;
     return 0;
-}
+}*/

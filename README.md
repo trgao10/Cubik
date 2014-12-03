@@ -101,5 +101,5 @@ Jincheng Li (<lijincheng8801@gmail.com>)
 
 The contributors thank Shiwen Zhao (<shiwen.zhao@duke.edu>) for compilation testing this project. The first contributor also thanks Gilles Debunne (<contact@libqglviewer.com>) for many useful discussions.
 
----------------------------------:
-Duke University, Dec 2014
+---------------------------------
+                                                                            Duke University, Dec 2014

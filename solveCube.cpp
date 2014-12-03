@@ -171,6 +171,8 @@ vector<string> Cubik::solveCube() {
     //look for "UF"(0),"UR"(1),"UL"(2),"UB"(3), return there index and directions
 
     bool first_edge = false;
+    bool first_edge_position = false;
+
     for (int i = 0; first_edge ==false ; i++){
 
         if (currentState[0]==0 && currentState[1]==1 && currentState[2]==2 && currentState[3]==3 && currentState[20]==0 && currentState[21]==0 && currentState[22]==0 && currentState[23]==0){
@@ -250,6 +252,21 @@ vector<string> Cubik::solveCube() {
             first_edge = true;
         }
 
+        if (currentState[0]==0 && currentState[1]==1 && currentState[2]==2 && currentState[3]==3){
+            first_edge_position = true;
+        }
+
+        if (first_edge_position == false && currentState[0]>=0 && currentState[0]<4 && currentState[1]>=0 && currentState[1]<4 && currentState[2]>=0 && currentState[2]<4 && currentState[3]>=0 && currentState[3]<4){
+            if(currentState[0]!=0){
+                do_move("front", "F2");
+            }
+            else if (currentState[1]!=1){
+                do_move("right", "F2");
+            }
+            else if (currentState[2]!=2){
+                do_move("back", "F2");
+            }
+        }
 
     }
 
@@ -343,18 +360,22 @@ vector<string> Cubik::solveCube() {
         }
 
         if (first_corner ==false && currentState[12]>=12 && currentState[12]<16 && currentState[13]>=12 && currentState[13]<16 && currentState[14]>=12 && currentState[14]<16 && currentState[15]>=12 && currentState[15]<16){
-            if(currentState[12]!=12){
+            if(currentState[12]!=12 && currentState[32]!=0){
                 if(currentState[32]==1){do_move("right", "L1D1L3");}
                 else if(currentState[32]==2){do_move("front", "R3D3R1");}
             }
-            else if (currentState[13]!=13){
-                if(currentState[32]==1){do_move("back", "L1D1L3");}
-                else if(currentState[32]==2){do_move("right", "R3D3R1");}
+            else if (currentState[13]!=13 && currentState[33]!=0){
+                if(currentState[33]==1){do_move("back", "L1D1L3");}
+                else if(currentState[33]==2){do_move("right", "R3D3R1");}
 
             }
-            else if (currentState[14]!=14){
-                if(currentState[32]==1){do_move("left", "L1D1L3");}
-                else if(currentState[32]==2){do_move("back", "R3D3R1");}
+            else if (currentState[14]!=14 && currentState[34]!=0){
+                if(currentState[34]==1){do_move("left", "L1D1L3");}
+                else if(currentState[34]==2){do_move("back", "R3D3R1");}
+            }
+            else if (currentState[15]!=15 && currentState[35]!=0){
+                if(currentState[35]==1){do_move("front", "L1D1L3");}
+                else if(currentState[35]==2){do_move("left", "R3D3R1");}
             }
         }
 

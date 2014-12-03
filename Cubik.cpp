@@ -99,8 +99,8 @@ void Viewer::drawIndicatorCube() {
 }
 
 void Viewer::drawHint() {
-    drawText(10, 20, QString::fromStdString("Next Move: " + cubik.getNextMove()));
-    drawText(10, 40, QString("%1 Steps Left").arg(cubik.getNumRemainingMoves()));
+    // drawText(10, 20, QString::fromStdString("Next Move: " + cubik.getNextMove()));
+    // drawText(10, 40, QString("%1 Steps Left").arg(cubik.getNumRemainingMoves()));
 }
 
 void Viewer::drawIndicatorAxis() {
@@ -305,9 +305,9 @@ void Viewer::keyPressEvent(QKeyEvent *e) {
         if (hintMode)
             hintMode = false;
         else if (!hintMode) {
-            std::cout << "solving cubes..." << std::endl;
+            // std::cout << "solving cubes..." << std::endl;
             cubik.solveCubeStoreSolution();
-            std::cout << "solved!" << std::endl;
+            // std::cout << "solved!" << std::endl;
             
             hintMode = true;
         }
@@ -500,7 +500,7 @@ void Cubik::updateEdgeCornerPosition() {
     }
     if (changedFlag)
         increase_nSteps();
-    solveCubeStoreSolution();
+    // solveCubeStoreSolution();
 }
 
 Cube * Cubik::getEdgeCornerCubeAtPosition(qglviewer::Vec pos) {

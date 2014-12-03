@@ -132,17 +132,36 @@ void do_move(string face, string mvs){
     }
 }
 
-vector < vector <string> > Cubik::solveCube() {
+vector<string> simplify(vector<string> result) {
+    vector<string> simpResult;
+    for (auto iter = result.begin(); iter != result.end(); ++iter) {
+        if (((*iter).size() == 2) && ((*iter)[1] == '2')) {
+            simpResult.push_back((*iter).substr(0,1));
+            simpResult.push_back((*iter).substr(0,1));
+        } else
+            simpResult.push_back(*iter);
+    }
+    for (auto iter = simpResult.begin(); iter != simpResult.end(); ++iter) {
+        if (iter+1 == simpResult.end())
+            break;
+        if (((*iter) == (*(iter+1))+"\'") || ((*iter)+"\'" == (*(iter+1))))
+            simpResult.erase(iter, iter+2);
+    }
+
+    return simpResult;
+}
+
+vector<vector<string> > simplify(vector<vector<string> > result) {
+    for (vector<vector<string> >::iterator iter = result.begin(); iter != result.end(); ++iter) {
+        *iter = simplify(*iter);
+    }
+    return result;
+}
+
+vector<vector<string> > Cubik::solveCube() {
     //--- Define the goal.
     string goal[] = { "UF", "UR", "UB", "UL", "DF", "DR", "DB", "DL", "FR", "FL", "BR", "BL",
                       "UFR", "URB", "UBL", "ULF", "DRF", "DFL", "DLB", "DBR" };
-    
-    // for (auto iter = currentStatus.begin(); iter != currentStatus.end(); ++iter)
-    //     std::cout << *iter << " ";
-    // std::cout << std::endl;
-    // for (int j = 0; j < 20; j++)
-    //     std::cout << goal[j] << " ";
-    // std::cout << std::endl;
 
     //UF UR UB UL DF DR DB DL FR FL BR BL UFR URB UBL ULF DRF DFL DLB DBR
     //0  1  2  3  4  5  6  7  8  9  10 11 12  13  14  15  16  17  18  19
@@ -771,6 +790,8 @@ vector < vector <string> > Cubik::solveCube() {
     for (int i =20; i<40; i++){
         if(currentState[i]!=0){flag = false;}
     }*/
+    
+    final_result = simplify(final_result);
 
     return final_result;
 

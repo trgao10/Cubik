@@ -43,7 +43,7 @@ private:
                                                         qglviewer::Vec( 2.0f,-2.0f,-2.0f), // DBR
     };
     std::vector<std::string> currentStatus;
-    std::vector<std::string> solutionToCurrentStatus;
+    std::vector<std::vector<std::string> > solutionToCurrentStatus;
     int nSteps;
     int selected;
     bool resumeSpinning;
@@ -58,15 +58,15 @@ public:
     bool checkResumeSpinning() { return resumeSpinning; }
     void setResumeSpinning(bool ifResume) { resumeSpinning = ifResume; }
     bool isSpinning();
-    std::string getNextMove() {
-        if (getNumRemainingMoves() > 0)
-            return *solutionToCurrentStatus.begin();
-        else
-            return "";
-    }
-    int getNumRemainingMoves() {
-        return solutionToCurrentStatus.size();
-    }
+    /* std::string getNextMove() { */
+    /*     if (getNumRemainingMoves() > 0) */
+    /*         return *solutionToCurrentStatus.begin(); */
+    /*     else */
+    /*         return ""; */
+    /* } */
+    /* int getNumRemainingMoves() { */
+    /*     return solutionToCurrentStatus.size(); */
+    /* } */
     Cube * getIndicatorCube () {
         return indicatorCube;
     }
@@ -101,7 +101,7 @@ public:
     qglviewer::Vec relativePositionByPosition(Cube * ChildCube, Cube * ParentCube) {
         return (ChildCube->getCubeFrame()->position() - ParentCube->getCubeFrame()->position());
     }
-    std::vector<std::string> solveCube();
+    std::vector<std::vector<std::string> > solveCube();
     void solveCubeStoreSolution();
 };
 

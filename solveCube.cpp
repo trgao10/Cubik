@@ -785,7 +785,7 @@ vector < vector <string> > Cubik::solveCube() {
     }
     result = solveCube(current);
     for (unsigned i=0; i<result.size(); i++){
-        for (unsigned j=0; j<result.size(); j++){
+        for (unsigned j=0; j<result[i].size(); j++){
             cout << result[i][j];
         }
         cout << "\n";

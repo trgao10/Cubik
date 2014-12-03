@@ -132,31 +132,37 @@ void do_move(string face, string mvs){
     }
 }
 
-vector<string> simplify(vector<string> result) {
-    vector<string> simpResult;
-    for (auto iter = result.begin(); iter != result.end(); ++iter) {
-        if (((*iter).size() == 2) && ((*iter)[1] == '2')) {
-            simpResult.push_back((*iter).substr(0,1));
-            simpResult.push_back((*iter).substr(0,1));
-        } else
-            simpResult.push_back(*iter);
-    }
-    for (auto iter = simpResult.begin(); iter != simpResult.end(); ++iter) {
-        if (iter+1 == simpResult.end())
-            break;
-        if (((*iter) == (*(iter+1))+"\'") || ((*iter)+"\'" == (*(iter+1))))
-            simpResult.erase(iter, iter+2);
-    }
+// vector<string> simplify(vector<string> result) {
+//     vector<string> simpResult;
+//     for (auto iter = result.begin(); iter != result.end(); ++iter) {
+//         if (((*iter).size() == 2) && ((*iter)[1] == '2')) {
+//             simpResult.push_back((*iter).substr(0,1));
+//             simpResult.push_back((*iter).substr(0,1));
+//         } else
+//             simpResult.push_back(*iter);
+//     }
+//     // for (auto iter = simpResult.begin(); iter != simpResult.end(); ++iter) {
+//     //     if (iter+1 == simpResult.end())
+//     //         break;
+//     //     if (((*iter) == (*(iter+1))+"\'") || ((*iter)+"\'" == (*(iter+1))))
+//     //         simpResult.erase(iter, iter+2);
+//     // }
+//     // for (auto iter = simpResult.begin(); iter+3 != simpResult.end(); ++iter) {
+//     //     if ((simpResult.end() - iter) < 4)
+//     //         break;
+//     //     if (((*iter) == (*(iter+1))) && ((*iter) == (*(iter+2))) && ((*iter) == (*(iter+3))))
+//     //         simpResult.erase(iter, iter+4);
+//     // }
 
-    return simpResult;
-}
+//     return simpResult;
+// }
 
-vector<vector<string> > simplify(vector<vector<string> > result) {
-    for (vector<vector<string> >::iterator iter = result.begin(); iter != result.end(); ++iter) {
-        *iter = simplify(*iter);
-    }
-    return result;
-}
+// vector<vector<string> > simplify(vector<vector<string> > result) {
+//     for (vector<vector<string> >::iterator iter = result.begin(); iter != result.end(); ++iter) {
+//         *iter = simplify(*iter);
+//     }
+//     return result;
+// }
 
 vector<vector<string> > Cubik::solveCube() {
     //--- Define the goal.
@@ -790,8 +796,8 @@ vector<vector<string> > Cubik::solveCube() {
     for (int i =20; i<40; i++){
         if(currentState[i]!=0){flag = false;}
     }*/
-    
-    final_result = simplify(final_result);
+
+    final_result = iterSimplify(final_result);
 
     return final_result;
 

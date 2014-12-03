@@ -44,6 +44,9 @@ private:
     };
     std::vector<std::string> currentStatus;
     std::vector<std::vector<std::string> > solutionToCurrentStatus;
+    
+    int currPhase;
+    int currPhaseStartStep;
     int nSteps;
     int selected;
     bool resumeSpinning;
@@ -59,7 +62,18 @@ public:
     void setResumeSpinning(bool ifResume) { resumeSpinning = ifResume; }
     bool isSpinning();
 
+    int getCurrPhase() { return currPhase; }
+    void setCurrPhase(int cp) { currPhase = cp; }
     std::string getOrientation(Cube * cube, std::string solvedStatus);
+    std::vector<std::vector<std::string> > getSolutionToCurrentStatus() {
+        return solutionToCurrentStatus;
+    }
+    int getCurrPhaseStartStep() {
+        return currPhaseStartStep;
+    }
+    void setCurrPhaseStartStep(int ns) {
+        currPhaseStartStep = ns;
+    }
     Cube * getIndicatorCube () {
         return indicatorCube;
     }
@@ -85,8 +99,39 @@ public:
     void setSelectedFrameNumber(int nb) {
         selected = nb;
     }
+    int getPhaseLength() {
+        if (currPhase == 7)
+            return 0;
+        else if ((currPhase >= 0) && (currPhase < 7))
+            return ((int) solutionToCurrentStatus[currPhase].size());
+        else
+            return -1;
+    }
+    int getPhaseLength(std::vector<std::vector<std::string> > tmpSoln, int tmpPhase) {
+        if (tmpPhase == 7)
+            return 0;
+        else if ((tmpPhase >= 0) && (tmpPhase < 7))
+            return ((int) tmpSoln[currPhase].size());
+        else
+            return -1;
+    }
     void increase_nSteps() {
         nSteps++;
+    }
+    int getNumSteps() {
+        return nSteps;
+    }
+    bool checkSolved() {
+        for (auto iter = currentStatus.begin(), jter = solvedCube.begin();
+             iter != currentStatus.end(), jter != solvedCube.end();
+             ++iter, ++jter) {
+            if ((*iter) != (*jter))
+                return false;
+        }
+        return true;
+    }
+    void updateSolutionToCurrentStatus() {
+        solveCubeStoreSolution();
     }
     void updateEdgeCornerPosition();
     Cube * getEdgeCornerCubeAtPosition(qglviewer::Vec pos);
@@ -94,8 +139,82 @@ public:
     qglviewer::Vec relativePositionByPosition(Cube * ChildCube, Cube * ParentCube) {
         return (ChildCube->getCubeFrame()->position() - ParentCube->getCubeFrame()->position());
     }
+    int locatePhase(std::vector<std::vector<std::string> > tmpSoln) {
+        int userPhase = 0;
+        for (auto iter = tmpSoln.begin(); iter != tmpSoln.end(); ++iter) {
+        if (!(*iter).empty())
+            break;
+        userPhase++;
+        }
+        return userPhase;
+    }
+    int locateCurrPhase() {
+        int userPhase = 0;
+        for (auto iter = solutionToCurrentStatus.begin(); iter != solutionToCurrentStatus.end(); ++iter) {
+        if (!(*iter).empty())
+            break;
+        userPhase++;
+        }
+        return userPhase;
+    }
     std::vector<std::vector<std::string> > solveCube();
     void solveCubeStoreSolution();
+    std::vector<std::string> localSimplify(std::vector<std::string> original) {
+        std::vector<std::string> simpResult;
+        for (auto iter = original.begin(); iter != original.end(); ++iter) {
+            if (((*iter).size() == 2) && ((*iter)[1] == '2')) {
+                simpResult.push_back((*iter).substr(0,1));
+                simpResult.push_back((*iter).substr(0,1));
+            } else
+                simpResult.push_back(*iter);
+        }
+        original = simpResult;
+
+        for (auto iter = original.begin(); iter != original.end(); ++iter) {
+            if (iter+1 >= original.end())
+                break;
+            if (((*iter).size() != (*(iter+1)).size()) && ((*iter)[0] == (*(iter+1))[0])) {
+                iter = original.erase(iter, iter+2);
+            }
+        }
+        for (auto iter = original.begin(); iter != original.end(); ++iter) {
+            if ((original.end() - iter) < 4)
+                break;
+            if (((*iter) == (*(iter+1))) && ((*iter) == (*(iter+2))) && ((*iter) == (*(iter+3))))
+                original.erase(iter, iter+4);
+        }
+        return original;
+    }
+    bool vecStringEqual(std::vector<std::string> original, std::vector<std::string> simplified) {
+        for (auto iter = original.begin(), jter = simplified.begin();
+             iter != original.end(), jter != simplified.end();
+             ++iter, ++jter) {
+            if ((*iter) != (*jter))
+                return false;
+        }
+        return true;
+    }
+    std::vector<std::string> iterSimplify(std::vector<std::string> original) {
+        /* std::cout << "before iterSimplify: "; */
+        /* for (auto iter = original.begin(); iter != original.end(); ++iter) */
+        /*     std::cout << *iter << " "; */
+        /* std::cout << std::endl; */
+        
+        while (!vecStringEqual(original, localSimplify(original)))
+            original = localSimplify(original);
+        
+        /* std::cout << "after iterSimplify: "; */
+        /* for (auto iter = original.begin(); iter != original.end(); ++iter) */
+        /*     std::cout << *iter << " "; */
+        /* std::cout << std::endl; */
+        return original;
+    }
+    std::vector<std::vector<std::string> > iterSimplify(std::vector<std::vector<std::string> > result) {
+        for (std::vector<std::vector<std::string> >::iterator iter = result.begin(); iter != result.end(); ++iter) {
+            *iter = iterSimplify(*iter);
+        }
+        return result;
+    }
 };
 
 class Viewer : public QGLViewer {

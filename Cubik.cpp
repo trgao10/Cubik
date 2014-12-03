@@ -99,8 +99,35 @@ void Viewer::drawIndicatorCube() {
 }
 
 void Viewer::drawHint() {
-    // drawText(10, 20, QString::fromStdString("Next Move: " + cubik.getNextMove()));
-    // drawText(10, 40, QString("%1 Steps Left").arg(cubik.getNumRemainingMoves()));
+    if (cubik.checkSolved())
+        cubik.setCurrPhase(7);
+    else {
+        // std::cout << "drawing!" << std::endl;
+        std::vector<std::vector<std::string> > tmpSoln = cubik.solveCube();
+        // std::cout << "passed!" << std::endl;
+        int tmpPhase = cubik.locatePhase(tmpSoln);
+        if ((tmpPhase >= cubik.getCurrPhase()) && (cubik.getPhaseLength(tmpSoln, tmpPhase) < cubik.getPhaseLength()))
+            cubik.updateSolutionToCurrentStatus();
+    }
+    
+    if ((cubik.getNumSteps() > 0) && (cubik.getCurrPhase() == 7))
+        drawText(10, 20, QString::fromStdString("Rubik's Cube Solved!"));
+    else if ((cubik.getCurrPhase() >= 0) && (cubik.getCurrPhase() <= 6)) {
+        std::vector<std::vector<std::string> > soln = cubik.getSolutionToCurrentStatus();
+        int userPhase = cubik.locatePhase(soln);
+        std::vector<std::string> remCurrPhase = soln[userPhase];
+        // std::vector<std::string> simpRemCurrPhase = cubik.iterSimplify(remCurrPhase);
+        int numStepsInCurrPhase = cubik.getNumSteps() - cubik.getCurrPhaseStartStep();
+        drawText(10, 20, QString::fromStdString("Phase " + std::to_string(userPhase+1) + ": " + accumulate(remCurrPhase.begin()+numStepsInCurrPhase, remCurrPhase.end(), string(""))));
+        // drawText(10, 40, QString::fromStdString("Simplified Phase " + std::to_string(userPhase+1) + ": " + accumulate(simpRemCurrPhase.begin(), simpRemCurrPhase.end(), string(""))));
+        // std::vector<std::vector<std::string> > tmpSoln = cubik.solveCube();
+        // int tmpPhase = cubik.locatePhase(tmpSoln);
+        // drawText(10, 40, QString::fromStdString("Tmp Phase " + std::to_string(tmpPhase+1) + ":" + accumulate(tmpSoln[tmpPhase].begin(), tmpSoln[tmpPhase].end(), string(""))));
+        // std::vector<std::string> simplified = cubik.iterSimplify(tmpSoln[tmpPhase]);
+        // drawText(10, 60, QString::fromStdString("Tmp Phase Simplified" + std::to_string(tmpPhase+1) + ":" + accumulate(simplified.begin(), simplified.end(), string(""))));
+        // drawText(10, 20, QString::fromStdString("Remaining Steps in Current Phase: " + accumulate(soln[userPhase].begin(), soln[userPhase].end(), string(""))));
+        // drawText(10, 40, QString::fromStdString("Phase " + std::to_string(userPhase+1)));
+    }
 }
 
 void Viewer::drawIndicatorAxis() {
@@ -305,9 +332,9 @@ void Viewer::keyPressEvent(QKeyEvent *e) {
         if (hintMode)
             hintMode = false;
         else if (!hintMode) {
-            // std::cout << "solving cubes..." << std::endl;
+            std::cout << "solving cubes..." << std::endl;            
             cubik.solveCubeStoreSolution();
-            // std::cout << "solved!" << std::endl;
+            std::cout << "solved!" << std::endl;
             
             hintMode = true;
         }
@@ -523,10 +550,12 @@ Cube * Cubik::getEdgeCornerCubeAtPosition(qglviewer::Vec pos) {
 }
 
 void Cubik::solveCubeStoreSolution() {
-    // std::cout << "currentStatus: ";
-    // for (auto iter = currentStatus.begin(); iter != currentStatus.end(); ++iter)
-    //     std::cout << *iter << " ";
-    // std::cout << std::endl;
+    std::cout << "currentStatus: ";
+    for (auto iter = currentStatus.begin(); iter != currentStatus.end(); ++iter)
+        std::cout << *iter << " ";
+    std::cout << std::endl;
     solutionToCurrentStatus.erase(solutionToCurrentStatus.begin(), solutionToCurrentStatus.end());
     solutionToCurrentStatus = solveCube();
+    currPhase = locateCurrPhase();    
+    setCurrPhaseStartStep(getNumSteps());
 }

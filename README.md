@@ -6,10 +6,10 @@ Cubik
 ![Cubik Screenshot](/images/Cubik.png)
 
 ## Quick Start Guide
-+ read [Dependency and Compilation](#CompilationGuide) and build the application
-+ glance at instructions in [Basic Operation](#BasicOperation), rotate faces in whatever way you like until solving it becomes interesting
-+ in case you stuck at some point, invoke hint mode by pressing H; you may want to familiar yourself with [Notations](#Notations) that appear in the hints
-+ follow the hints and solve the puzzle
++ Read [Dependency and Compilation](#CompilationGuide) and build the application;
++ Glance at instructions in [Basic Operation](#BasicOperation), rotate faces in whatever way you like until solving it becomes interesting;
++ In case you stuck at some point, invoke hint mode by pressing H; you may want to familiar yourself with [Notations](#Notations) that appear in the hints;
++ Follow the hints and solve the puzzle. Don't worry if you mess up with steps shown in the hints -- the hints will get updated **in real time**.
 
 ## <a name="BasicOperation"></a> Basic Operations
 
@@ -17,7 +17,8 @@ Cubik
 + press down and hold **left button** for roration
 + press down and hold **right button** for translation
 + forward/backward rotate **middle wheel** for zoom in/out
-+ press **F** to toggle on/off the face color indicator on bottom left corner
++ press **F** to toggle on/off the face color indicator cube on bottom left corner
++ press **Ctrl+S** to take a screenshot
 + press **Ctrl+Q** to exit
 
 #### Interactive Mode: select and rotate faces

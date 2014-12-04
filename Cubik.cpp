@@ -108,16 +108,22 @@ void Viewer::drawHint() {
     //         cubik.updateSolutionToCurrentStatus();
     // }
     
-    if ((cubik.getNumSteps() > 0) && (cubik.getCurrPhase() == 7))
+    //if ((cubik.getNumSteps() > 0) && (cubik.getCurrPhase() == 7))
+    if (cubik.getCurrPhase() == 7)
         drawText(10, 20, QString::fromStdString("Rubik's Cube Solved!"));
     else if ((cubik.getCurrPhase() >= 0) && (cubik.getCurrPhase() <= 6)) {
-        std::vector<std::vector<std::string> > soln = cubik.getSolutionToCurrentStatus();
-        int userPhase = cubik.locatePhase(soln);
-        std::vector<std::string> remCurrPhase = soln[userPhase];
+        std::vector<std::string> remCurrPhase = cubik.getRemStepsInCurrPhase();
         // std::vector<std::string> simpRemCurrPhase = cubik.iterSimplify(remCurrPhase);
-        int numStepsInCurrPhase = cubik.getNumSteps() - cubik.getCurrPhaseStartStep();
-        drawText(10, 20, QString::fromStdString("Phase " + std::to_string(userPhase+1) + ": " + accumulate(remCurrPhase.begin()+numStepsInCurrPhase, remCurrPhase.end(), string(""))));
+        drawText(10, 20, QString::fromStdString("Phase " + std::to_string(cubik.getCurrPhase()+1) + ": " + accumulate(remCurrPhase.begin(), remCurrPhase.end(), string(""))));
         drawText(10, 40, QString::fromStdString("Last Move: " + cubik.getLastMove()));
+        // std::vector<std::vector<std::string> > soln = cubik.getSolutionToCurrentStatus();
+        // int userPhase = cubik.locatePhase(soln);
+        // std::vector<std::string> remCurrPhase = soln[userPhase];
+        // std::vector<std::string> simpRemCurrPhase = cubik.iterSimplify(remCurrPhase);
+        // int numStepsInCurrPhase = cubik.getNumSteps() - cubik.getCurrPhaseStartStep();
+        // drawText(10, 20, QString::fromStdString("Phase " + std::to_string(userPhase+1) + ": " + accumulate(remCurrPhase.begin()+numStepsInCurrPhase, remCurrPhase.end(), string(""))));
+        // drawText(10, 20, QString::fromStdString("Phase " + std::to_string(userPhase+1) + ": " + accumulate(remCurrPhase.begin()+numStepsInCurrPhase, remCurrPhase.end(), string(""))));
+        // drawText(10, 40, QString::fromStdString("Last Move: " + cubik.getLastMove()));
         // drawText(10, 40, QString::fromStdString("Simplified Phase " + std::to_string(userPhase+1) + ": " + accumulate(simpRemCurrPhase.begin(), simpRemCurrPhase.end(), string(""))));
         // std::vector<std::vector<std::string> > tmpSoln = cubik.solveCube();
         // int tmpPhase = cubik.locatePhase(tmpSoln);
@@ -331,9 +337,9 @@ void Viewer::keyPressEvent(QKeyEvent *e) {
         if (hintMode)
             hintMode = false;
         else if (!hintMode) {
-            std::cout << "solving cubes..." << std::endl;            
+            // std::cout << "solving cubes..." << std::endl;            
             cubik.solveCubeStoreSolution();
-            std::cout << "solved!" << std::endl;
+            // std::cout << "solved!" << std::endl;
             
             hintMode = true;
         }
@@ -543,17 +549,40 @@ void Cubik::updateEdgeCornerPosition() {
             }
         }
     }
-    if (changedFlag)
+    if (changedFlag) {
         increase_nSteps();
-    std::string updatedFace = "";
-    for (int j = 0; j < NumFaces; j++) {
-        std::string moveType = updateFaceCenerCubeOrientation(j);
-        if ((moveType == "\'") || (moveType == "2") || (moveType == ""))
-            updatedFace = faceCenterCube(j)->getCubeType() + moveType;
+        std::string updatedFace = "";
+        for (int j = 0; j < NumFaces; j++) {
+            std::string moveType = updateFaceCenerCubeOrientation(j);
+            if ((moveType == "\'") || (moveType == "2") || (moveType == ""))
+                updatedFace = faceCenterCube(j)->getCubeType() + moveType;
+        }
+        if (updatedFace != "")
+            setLastMove(updatedFace);
+   
+        if (!getRemStepsInCurrPhase().empty()) {
+            if (getLastMove() == *(getRemStepsInCurrPhase().begin()))
+                deleteHeadRemStep();
+            else
+                addHeadRemStep(inverseMove(getLastMove()));
+            if (getRemStepsInCurrPhase().empty()) {
+                solveCubeStoreSolution();        
+            }
+        }
     }
-    if (updatedFace != "")
-        setLastMove(updatedFace);
     // solveCubeStoreSolution();
+}
+
+std::string Cubik::inverseMove(std::string move) {
+    if (move.size() == 1)
+        return (move+"\'");
+    else if (move.size() == 2) {
+        if (move[1] == '\'')
+            return move.substr(0,1);
+        else if (move[1] == '2')
+            return move;
+    }
+    return "";
 }
 
 std::string Cubik::updateFaceCenerCubeOrientation(int j) {
@@ -654,15 +683,21 @@ Cube * Cubik::getEdgeCornerCubeAtPosition(qglviewer::Vec pos) {
 }
 
 void Cubik::solveCubeStoreSolution() {
-    std::cout << "currentStatus: ";
-    for (auto iter = currentStatus.begin(); iter != currentStatus.end(); ++iter)
-        std::cout << *iter << " ";
-    std::cout << std::endl;
+    // std::cout << "currentStatus: ";
+    // for (auto iter = currentStatus.begin(); iter != currentStatus.end(); ++iter)
+    //     std::cout << *iter << " ";
+    // std::cout << std::endl;
     solutionToCurrentStatus.erase(solutionToCurrentStatus.begin(), solutionToCurrentStatus.end());
     solutionToCurrentStatus = solveCube();
     currPhase = locateCurrPhase();    
     resetNumSteps();
     setCurrPhaseStartStep(getNumSteps());
+    setRemStepsInCurrPhase();
+}
+
+void Cubik::setRemStepsInCurrPhase() {
+    if ((currPhase >= 0) && (currPhase < 7))
+        remStepsInCurrPhase = solutionToCurrentStatus[currPhase];
 }
 
 int Cubik::getPhaseLength() {
@@ -755,18 +790,8 @@ bool Cubik::vecStringEqual(std::vector<std::string> original, std::vector<std::s
 }
 
 std::vector<std::string> Cubik::iterSimplify(std::vector<std::string> original) {
-    /* std::cout << "before iterSimplify: "; */
-    /* for (auto iter = original.begin(); iter != original.end(); ++iter) */
-    /*     std::cout << *iter << " "; */
-    /* std::cout << std::endl; */
-        
     while (!vecStringEqual(original, localSimplify(original)))
         original = localSimplify(original);
-        
-    /* std::cout << "after iterSimplify: "; */
-    /* for (auto iter = original.begin(); iter != original.end(); ++iter) */
-    /*     std::cout << *iter << " "; */
-    /* std::cout << std::endl; */
     return original;
 }
 
@@ -775,4 +800,13 @@ std::vector<std::vector<std::string> > Cubik::iterSimplify(std::vector<std::vect
         *iter = iterSimplify(*iter);
     }
     return result;
+}
+
+void Cubik::addHeadRemStep(std::string move) {
+    if ((move.size() == 2) && (move[1] == '2')) {
+        remStepsInCurrPhase.insert(remStepsInCurrPhase.begin(), move.substr(0,1));
+        remStepsInCurrPhase.insert(remStepsInCurrPhase.begin(), move.substr(0,1));
+    } else
+        remStepsInCurrPhase.insert(remStepsInCurrPhase.begin(), move);
+    remStepsInCurrPhase = iterSimplify(remStepsInCurrPhase);
 }

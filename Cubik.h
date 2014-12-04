@@ -48,6 +48,7 @@ private:
   
     int currPhase;
     int currPhaseStartStep;
+    std::vector<std::string> remStepsInCurrPhase;
     std::string lastMove;
     int nSteps;
     int selected;
@@ -63,8 +64,12 @@ public:
     bool checkResumeSpinning() { return resumeSpinning; }
     void setResumeSpinning(bool ifResume) { resumeSpinning = ifResume; }
     bool isSpinning();
-
+    std::vector<std::string> getRemStepsInCurrPhase() { return remStepsInCurrPhase; }
+    void setRemStepsInCurrPhase();
+    void deleteHeadRemStep() { remStepsInCurrPhase.erase(remStepsInCurrPhase.begin()); }
+    void addHeadRemStep(std::string move);
     int getCurrPhase() { return currPhase; }
+    // void increase_currPhase() { currPhase++; };
     void setCurrPhase(int cp) { currPhase = cp; }
     std::string getOrientation(Cube * cube, std::string solvedStatus);
     std::vector<std::vector<std::string> > getSolutionToCurrentStatus() { return solutionToCurrentStatus; }
@@ -83,6 +88,7 @@ public:
     int getPhaseLength(std::vector<std::vector<std::string> > tmpSoln, int tmpPhase);
     void increase_nSteps() { nSteps++; }
     std::string getLastMove() { return lastMove; }
+    std::string inverseMove(std::string move);
     void setLastMove(std::string lm) { lastMove = lm; }
     int getNumSteps() { return nSteps; }
     void resetNumSteps() { nSteps = 0; }

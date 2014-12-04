@@ -101,14 +101,12 @@ void Viewer::drawIndicatorCube() {
 void Viewer::drawHint() {
     if (cubik.checkSolved())
         cubik.setCurrPhase(7);
-    else {
-        // std::cout << "drawing!" << std::endl;
-        std::vector<std::vector<std::string> > tmpSoln = cubik.solveCube();
-        // std::cout << "passed!" << std::endl;
-        int tmpPhase = cubik.locatePhase(tmpSoln);
-        if ((tmpPhase >= cubik.getCurrPhase()) && (cubik.getPhaseLength(tmpSoln, tmpPhase) < cubik.getPhaseLength()))
-            cubik.updateSolutionToCurrentStatus();
-    }
+    // else {
+    //     std::vector<std::vector<std::string> > tmpSoln = cubik.solveCube();
+    //     int tmpPhase = cubik.locatePhase(tmpSoln);
+    //     if ((tmpPhase >= cubik.getCurrPhase()) && (cubik.getPhaseLength(tmpSoln, tmpPhase) < cubik.getPhaseLength()))
+    //         cubik.updateSolutionToCurrentStatus();
+    // }
     
     if ((cubik.getNumSteps() > 0) && (cubik.getCurrPhase() == 7))
         drawText(10, 20, QString::fromStdString("Rubik's Cube Solved!"));
@@ -119,6 +117,7 @@ void Viewer::drawHint() {
         // std::vector<std::string> simpRemCurrPhase = cubik.iterSimplify(remCurrPhase);
         int numStepsInCurrPhase = cubik.getNumSteps() - cubik.getCurrPhaseStartStep();
         drawText(10, 20, QString::fromStdString("Phase " + std::to_string(userPhase+1) + ": " + accumulate(remCurrPhase.begin()+numStepsInCurrPhase, remCurrPhase.end(), string(""))));
+        drawText(10, 40, QString::fromStdString("Last Move: " + cubik.getLastMove()));
         // drawText(10, 40, QString::fromStdString("Simplified Phase " + std::to_string(userPhase+1) + ": " + accumulate(simpRemCurrPhase.begin(), simpRemCurrPhase.end(), string(""))));
         // std::vector<std::vector<std::string> > tmpSoln = cubik.solveCube();
         // int tmpPhase = cubik.locatePhase(tmpSoln);
@@ -409,6 +408,14 @@ Cubik::Cubik() {
         faceCenterCube(j)->getCubeFrame()->setTranslation(2*faceNormal(j));
         faceCenterCube(j)->getCubeFrame()->setConstraint(faceConstraint);
     }
+    
+    std::vector<qglviewer::Vec> tmp;
+    tmp.push_back(qglviewer::Vec( 1.0f, 0.0f, 0.0f));
+    tmp.push_back(qglviewer::Vec( 0.0f, 1.0f, 0.0f));
+    tmp.push_back(qglviewer::Vec( 0.0f, 0.0f, 1.0f));
+    for (int j = 0; j < NumFaces; j++) {
+        faceCenterCubeOrientation.push_back(tmp);
+    }
         
     for (auto iter = solvedCube.begin(); iter != solvedCube.end(); ++iter) {
         Cube * TmpCube = new Cube(*iter);
@@ -538,7 +545,104 @@ void Cubik::updateEdgeCornerPosition() {
     }
     if (changedFlag)
         increase_nSteps();
+    std::string updatedFace = "";
+    for (int j = 0; j < NumFaces; j++) {
+        std::string moveType = updateFaceCenerCubeOrientation(j);
+        if ((moveType == "\'") || (moveType == "2") || (moveType == ""))
+            updatedFace = faceCenterCube(j)->getCubeType() + moveType;
+    }
+    if (updatedFace != "")
+        setLastMove(updatedFace);
     // solveCubeStoreSolution();
+}
+
+std::string Cubik::updateFaceCenerCubeOrientation(int j) {
+    if (j == 0) { // U, check x,z
+        qglviewer::Vec oldX = faceCenterCubeOrientation[j][0];
+        qglviewer::Vec newX = faceCenterCube(j)->getCubeFrame()->inverseTransformOf(qglviewer::Vec( 1.0f, 0.0f, 0.0f));
+        faceCenterCubeOrientation[j][0] = faceCenterCube(j)->getCubeFrame()->inverseTransformOf(qglviewer::Vec( 1.0f, 0.0f, 0.0f));
+        faceCenterCubeOrientation[j][1] = faceCenterCube(j)->getCubeFrame()->inverseTransformOf(qglviewer::Vec( 0.0f, 1.0f, 0.0f));
+        faceCenterCubeOrientation[j][2] = faceCenterCube(j)->getCubeFrame()->inverseTransformOf(qglviewer::Vec( 0.0f, 0.0f, 1.0f));
+        if ((oldX + newX).norm() < 1e-3) {
+            return "2";
+        } else if ((oldX^newX)*qglviewer::Vec( 0.0f, 1.0f, 0.0f) > 1e-3) {
+            return "\'";
+        } else if ((oldX^newX)*qglviewer::Vec( 0.0f, 1.0f, 0.0f) < -1e-3) {
+            return "";
+        } else
+            return "None";
+    } else if (j == 1) { // D, check x,z
+        qglviewer::Vec oldX = faceCenterCubeOrientation[j][0];
+        qglviewer::Vec newX = faceCenterCube(j)->getCubeFrame()->inverseTransformOf(qglviewer::Vec( 1.0f, 0.0f, 0.0f));
+        faceCenterCubeOrientation[j][0] = faceCenterCube(j)->getCubeFrame()->inverseTransformOf(qglviewer::Vec( 1.0f, 0.0f, 0.0f));
+        faceCenterCubeOrientation[j][1] = faceCenterCube(j)->getCubeFrame()->inverseTransformOf(qglviewer::Vec( 0.0f, 1.0f, 0.0f));
+        faceCenterCubeOrientation[j][2] = faceCenterCube(j)->getCubeFrame()->inverseTransformOf(qglviewer::Vec( 0.0f, 0.0f, 1.0f));
+        if ((oldX + newX).norm() < 1e-3) {
+            return "2";
+        } else if ((oldX^newX)*qglviewer::Vec( 0.0f, 1.0f, 0.0f) < -1e-3) {
+            return "\'";
+        } else if ((oldX^newX)*qglviewer::Vec( 0.0f, 1.0f, 0.0f) > 1e-3) {
+            return "";
+        } else
+            return "None";
+    } else if (j == 2 ) { // F, check x,y
+        qglviewer::Vec oldX = faceCenterCubeOrientation[j][0];
+        qglviewer::Vec newX = faceCenterCube(j)->getCubeFrame()->inverseTransformOf(qglviewer::Vec( 1.0f, 0.0f, 0.0f));
+        faceCenterCubeOrientation[j][0] = faceCenterCube(j)->getCubeFrame()->inverseTransformOf(qglviewer::Vec( 1.0f, 0.0f, 0.0f));
+        faceCenterCubeOrientation[j][1] = faceCenterCube(j)->getCubeFrame()->inverseTransformOf(qglviewer::Vec( 0.0f, 1.0f, 0.0f));
+        faceCenterCubeOrientation[j][2] = faceCenterCube(j)->getCubeFrame()->inverseTransformOf(qglviewer::Vec( 0.0f, 0.0f, 1.0f));
+        if ((oldX + newX).norm() < 1e-3) {
+            return "2";
+        } else if ((oldX^newX)*qglviewer::Vec( 0.0f, 0.0f, 1.0f) > 1e-3) {
+            return "\'";
+        } else if ((oldX^newX)*qglviewer::Vec( 0.0f, 0.0f, 1.0f) < -1e-3) {
+            return "";
+        } else
+            return "None";
+    } else if (j == 3) { // B, check x,y
+        qglviewer::Vec oldX = faceCenterCubeOrientation[j][0];
+        qglviewer::Vec newX = faceCenterCube(j)->getCubeFrame()->inverseTransformOf(qglviewer::Vec( 1.0f, 0.0f, 0.0f));
+        faceCenterCubeOrientation[j][0] = faceCenterCube(j)->getCubeFrame()->inverseTransformOf(qglviewer::Vec( 1.0f, 0.0f, 0.0f));
+        faceCenterCubeOrientation[j][1] = faceCenterCube(j)->getCubeFrame()->inverseTransformOf(qglviewer::Vec( 0.0f, 1.0f, 0.0f));
+        faceCenterCubeOrientation[j][2] = faceCenterCube(j)->getCubeFrame()->inverseTransformOf(qglviewer::Vec( 0.0f, 0.0f, 1.0f));
+        if ((oldX + newX).norm() < 1e-3) {
+            return "2";
+        } else if ((oldX^newX)*qglviewer::Vec( 0.0f, 0.0f, 1.0f) < -1e-3) {
+            return "\'";
+        } else if ((oldX^newX)*qglviewer::Vec( 0.0f, 0.0f, 1.0f) > 1e-3) {
+            return "";
+        } else
+            return "None";
+    } else if (j == 4) { // L, check y,z
+        qglviewer::Vec oldY = faceCenterCubeOrientation[j][1];
+        qglviewer::Vec newY = faceCenterCube(j)->getCubeFrame()->inverseTransformOf(qglviewer::Vec( 0.0f, 1.0f, 0.0f));
+        faceCenterCubeOrientation[j][0] = faceCenterCube(j)->getCubeFrame()->inverseTransformOf(qglviewer::Vec( 1.0f, 0.0f, 0.0f));
+        faceCenterCubeOrientation[j][1] = faceCenterCube(j)->getCubeFrame()->inverseTransformOf(qglviewer::Vec( 0.0f, 1.0f, 0.0f));
+        faceCenterCubeOrientation[j][2] = faceCenterCube(j)->getCubeFrame()->inverseTransformOf(qglviewer::Vec( 0.0f, 0.0f, 1.0f));
+        if ((oldY + newY).norm() < 1e-3) {
+            return "2";
+        } else if ((oldY^newY)*qglviewer::Vec( 1.0f, 0.0f, 0.0f) < -1e-3) {
+            return "\'";
+        } else if ((oldY^newY)*qglviewer::Vec( 1.0f, 0.0f, 0.0f) > 1e-3) {
+            return "";
+        } else
+            return "None";
+    } else if (j == 5) { // R, check y,z
+        qglviewer::Vec oldY = faceCenterCubeOrientation[j][1];
+        qglviewer::Vec newY = faceCenterCube(j)->getCubeFrame()->inverseTransformOf(qglviewer::Vec( 0.0f, 1.0f, 0.0f));
+        faceCenterCubeOrientation[j][0] = faceCenterCube(j)->getCubeFrame()->inverseTransformOf(qglviewer::Vec( 1.0f, 0.0f, 0.0f));
+        faceCenterCubeOrientation[j][1] = faceCenterCube(j)->getCubeFrame()->inverseTransformOf(qglviewer::Vec( 0.0f, 1.0f, 0.0f));
+        faceCenterCubeOrientation[j][2] = faceCenterCube(j)->getCubeFrame()->inverseTransformOf(qglviewer::Vec( 0.0f, 0.0f, 1.0f));
+        if ((oldY + newY).norm() < 1e-3) {
+            return "2";
+        } else if ((oldY^newY)*qglviewer::Vec( 1.0f, 0.0f, 0.0f) > 1e-3) {
+            return "\'";
+        } else if ((oldY^newY)*qglviewer::Vec( 1.0f, 0.0f, 0.0f) < -1e-3) {
+            return "";
+        } else
+            return "None";
+    } else
+        return "None";
 }
 
 Cube * Cubik::getEdgeCornerCubeAtPosition(qglviewer::Vec pos) {
@@ -557,6 +661,7 @@ void Cubik::solveCubeStoreSolution() {
     solutionToCurrentStatus.erase(solutionToCurrentStatus.begin(), solutionToCurrentStatus.end());
     solutionToCurrentStatus = solveCube();
     currPhase = locateCurrPhase();    
+    resetNumSteps();
     setCurrPhaseStartStep(getNumSteps());
 }
 

@@ -44,9 +44,11 @@ private:
     };
     std::vector<std::string> currentStatus;
     std::vector<std::vector<std::string> > solutionToCurrentStatus;
-    
+    std::vector<std::vector<qglviewer::Vec> > faceCenterCubeOrientation;
+  
     int currPhase;
     int currPhaseStartStep;
+    std::string lastMove;
     int nSteps;
     int selected;
     bool resumeSpinning;
@@ -80,10 +82,14 @@ public:
     int getPhaseLength();
     int getPhaseLength(std::vector<std::vector<std::string> > tmpSoln, int tmpPhase);
     void increase_nSteps() { nSteps++; }
+    std::string getLastMove() { return lastMove; }
+    void setLastMove(std::string lm) { lastMove = lm; }
     int getNumSteps() { return nSteps; }
+    void resetNumSteps() { nSteps = 0; }
     bool checkSolved();
     
-    void updateSolutionToCurrentStatus() { solveCubeStoreSolution(); }
+    std::string updateFaceCenerCubeOrientation(int j);
+    // void updateSolutionToCurrentStatus() { solveCubeStoreSolution(); }
     void updateEdgeCornerPosition();
     Cube * getEdgeCornerCubeAtPosition(qglviewer::Vec pos);
     qglviewer::Vec relativePositionByCubeType(std::string childCubeType, std::string parentCubeType);

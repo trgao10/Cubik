@@ -5,24 +5,30 @@ Cubik
 
 ![Cubik Screenshot](/images/Cubik.png)
 
-## Basic Operations
+## Quick Start Guide
++ read [Dependency and Compilation](#CompilationGuide) and build the application
++ glance at instructions in [Basic Operation](#BasicOperation), rotate faces in whatever way you like until solving it becomes interesting
++ in case you stuck at some point, invoke hint mode by pressing H; you may want to familiar yourself with [Notations](#Notations) that appear in the hints
++ follow the hints and solve the puzzle
+
+## <a name="BasicOperation"></a> Basic Operations
 
 #### View Mode: view cube with mouse
-+ press down and hold left button for roration
-+ press down and hold right button for translation
-+ forward/backward rotate middle wheel for zoom in/out
-+ press F to toggle on/off the face color indicator on bottom left corner
-+ press Ctrl+Q to exit
++ press down and hold **left button** for roration
++ press down and hold **right button** for translation
++ forward/backward rotate **middle wheel** for zoom in/out
++ press **F** to toggle on/off the face color indicator on bottom left corner
++ press **Ctrl+Q** to exit
 
 #### Interactive Mode: select and rotate faces
-+ double click on a face to activate it, then rotate
-+ double click at any point not on the cube to deactivate face selection and back to view mode
-+ when a face is activated, Ctrl+(left|right|wheel) mouse buttons enables temporary view mode without exiting the interactive mode
++ **double click** on a face to activate it, then rotate
++ **double click** at any point not on the cube to deactivate face selection and back to view mode
++ when a face is activated, **Ctrl+(left|right|wheel)** mouse buttons enables temporary view mode without exiting the interactive mode
 
 #### Hint Mode: guide to a solution
-+ press H to toggle hint mode (next move and number of moves left shown on top left)
++ press **H** to toggle hint mode (next move and number of moves left shown on top left)
 
-## Dependency and Compilation
+## <a name="CompilationGuide"></a> Dependency and Compilation
 
 #### Dependency
 + **Qt 5**: Cubik is built upon the Qt framework. You need at least Qt 5.2.1 to compile it. If your default Ubuntu repository does not contain Qt5, check out this [link](http://askubuntu.com/questions/279421/how-can-i-install-qt-5-x-on-12-04-lts).
@@ -52,19 +58,17 @@ That's all. Happy Cubik-ing!
 ./Cubik
 ```
 
-## Notation and Algorithm for Solving Rubik's Cube
+## <a name="Notations"></a> Notations for the Algorithm
 
 The solution integrated into this version of Cubik is based on [Mark Jeay's algorithm](http://www.jeays.net/rubiks.htm). This algorithm is classic for beginner-level users since it is solved ituitively layer by layer. However, it is definetely not a fast algorithm which involves more steps than some other solutions.
 
-The notation is adapted from an earlier [Rubik's Cube Contest](http://tomas.rokicki.com/cubecontest/). The 6 faces of the cube are denoted as U (top/yellow), D(bottom/white), F(front/blue), B(back/green), L(left/orange), and R(right/red), respectively. Each solution step provided in the hint mode indicates one of the following three operations on the corresponding face:
+The notation is adapted from an earlier [Rubik's Cube Contest](http://tomas.rokicki.com/cubecontest/). The 6 faces of the cube are denoted as U (top/yellow), D(bottom/white), F(front/blue), B(back/green), L(left/orange), and R(right/red), respectively. Each solution step provided in the hint mode indicates one of the following two operations on the corresponding face:
 
 1. 90-degree turn clockwise: U, D, F, B, L, R;
 
-2. 180-degree turn clockwise: U2, D2, F2, B2, L2, R2;
+2. 90-degree turn counter-clockwise: U', D', F', B', L', R'.
 
-3. 90-degree turn counter-clockwise: U', D', F', B', L', R'.
-
-Note that clockwise and counter-clockwise turns are viewed with respect to the center of the cube.
+Note that clockwise and counter-clockwise turns are viewed with respect to the center of the face.
 
 The solution algorithm consists of 7 phases in general:
 

@@ -1,11 +1,11 @@
 Cubik
 =====
 
-[*Cubik*](https://github.com/trgao10/Cubik): a visualization project for Rubik's Cube
+[*Cubik*](https://github.com/trgao10/Cubik): a visualization project for Rubik's Cube ((click [here](https://dl.dropboxusercontent.com/u/25803260/CubikDemo.ogv) for a video demo))
 
 ![Cubik Screenshot](/images/Cubik.png)
 
-## Quick Start Guide (click [here](https://dl.dropboxusercontent.com/u/25803260/CubikDemo.ogv) for a video demo)
+## Quick Start Guide
 + Read [Dependency and Compilation](#CompilationGuide) and build the application;
 + Glance at instructions in [Basic Operation](#BasicOperation), rotate faces in whatever way you like until solving it becomes interesting;
 + In case you stuck at some point, invoke hint mode by pressing H; you may want to familiar yourself with [Notations](#Notations) that appear in the hints;

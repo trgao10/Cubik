@@ -1,7 +1,7 @@
 Cubik
 =====
 
-[*Cubik*](https://github.com/trgao10/Cubik): a visualization project for Rubik's Cube ((click [here](https://dl.dropboxusercontent.com/u/25803260/CubikDemo.ogv) for a video demo))
+[*Cubik*](https://github.com/trgao10/Cubik): a visualization project for Rubik's Cube (click [here](https://dl.dropboxusercontent.com/u/25803260/CubikDemo.ogv) for a video demo)
 
 ![Cubik Screenshot](/images/Cubik.png)
 
